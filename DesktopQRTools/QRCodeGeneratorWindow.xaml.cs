@@ -67,7 +67,7 @@ namespace DesktopQRTools
             }
 
             string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
-            string autoSaveFileName = "QRCode";
+            string autoSaveQRCodeName = "QRCode";
             string autoSaveDirectory = "";
             bool skipSaveDialog = false;
 
@@ -82,7 +82,7 @@ namespace DesktopQRTools
                         switch (parts[0])
                         {
                             case "AutoSaveQRCodeName":
-                                autoSaveFileName = parts[1];
+                                autoSaveQRCodeName = parts[1];
                                 break;
                             case "SkipSaveDialog":
                                 bool.TryParse(parts[1], out skipSaveDialog);
@@ -100,14 +100,14 @@ namespace DesktopQRTools
 
             if (skipSaveDialog && !string.IsNullOrEmpty(autoSaveDirectory))
             {
-                fileName = $"{autoSaveFileName}_{DateTime.Now:yyyyMMddHHmmss}.{(ImageFormatComboBox.SelectedIndex == 0 ? "png" : "svg")}";
+                fileName = $"{autoSaveQRCodeName}_{DateTime.Now:yyyyMMddHHmmss}.{(ImageFormatComboBox.SelectedIndex == 0 ? "png" : "svg")}";
                 filePath = Path.Combine(autoSaveDirectory, fileName);
             }
             else
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    FileName = autoSaveFileName,
+                    FileName = autoSaveQRCodeName,
                     Filter = (ImageFormatComboBox.SelectedIndex == 0) ? "PNG Image|*.png" : "SVG Image|*.svg",
                     Title = "Save QR Code Image"
                 };
