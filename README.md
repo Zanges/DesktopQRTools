@@ -5,7 +5,7 @@ Desktop QR Tools is a Windows desktop application designed to simplify working w
 ## Features
 
 - Generate QR codes with custom content
-- Create screen snippets to capture and share QR codes
+- Create screen snippets to scan a QR code.
 
 ## Description
 
