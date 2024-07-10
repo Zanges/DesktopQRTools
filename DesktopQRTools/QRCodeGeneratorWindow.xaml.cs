@@ -40,10 +40,10 @@ namespace DesktopQRTools
 
             try
             {
-                _qrCodeContent = content;
                 _generatedQRCode = GenerateQRCode(content);
                 QRCodeImage.Source = _generatedQRCode;
                 SaveButton.IsEnabled = true;
+                _qrCodeContent = content;
             }
             catch (Exception ex)
             {
@@ -81,9 +81,16 @@ namespace DesktopQRTools
                     }
                     else
                     {
-                        SaveQRCodeAsSvg(_qrCodeContent, saveFileDialog.FileName);
+                        if (_qrCodeContent != null)
+                        {
+                            SaveQRCodeAsSvg(_qrCodeContent, saveFileDialog.FileName);
+                            MessageBox.Show("QR code image saved successfully.", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No QR code content available to save.", "Save Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
                     }
-                    MessageBox.Show("QR code image saved successfully.", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
