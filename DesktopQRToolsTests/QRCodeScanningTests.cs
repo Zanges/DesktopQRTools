@@ -9,8 +9,8 @@ namespace DesktopQRToolsTests
     [TestFixture, Apartment(ApartmentState.STA)]
     public class QRCodeScanningTests
     {
-        private QRCodeGeneratorWindow? _generatorWindow;
-        private QRCodeScannerWindow? _scannerWindow;
+        private QRCodeGeneratorWindow _generatorWindow = null!;
+        private QRCodeScannerWindow _scannerWindow = null!;
 
         [SetUp]
         public void Setup()
@@ -60,8 +60,11 @@ namespace DesktopQRToolsTests
                 scannedContent = _scannerWindow.CaptureAndScanQRCode(startPoint, endPoint, qrCode);
 
                 // Create and show the QRCodeResultWindow
-                var resultWindow = new QRCodeResultWindow(scannedContent);
-                isOpenLinkButtonVisible = resultWindow.OpenLinkButton.Visibility == Visibility.Visible;
+                if (scannedContent != null)
+                {
+                    var resultWindow = new QRCodeResultWindow(scannedContent);
+                    isOpenLinkButtonVisible = resultWindow.OpenLinkButton?.Visibility == Visibility.Visible;
+                }
             });
 
             // Assert
