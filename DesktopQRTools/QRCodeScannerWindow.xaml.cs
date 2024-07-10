@@ -21,6 +21,8 @@ namespace DesktopQRTools
     public partial class QRCodeScannerWindow : Window
     {
         private System.Windows.Point startPoint;
+        private OptionsWindow.ScannerMode scannerMode;
+        private Rectangle targetingRectangle;
 
         public QRCodeScannerWindow()
         {
@@ -36,6 +38,48 @@ namespace DesktopQRTools
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
             this.WindowState = WindowState.Maximized;
+
+            // Get the scanner mode from options
+            var optionsWindow = new OptionsWindow();
+            scannerMode = optionsWindow.GetScannerMode();
+
+            if (scannerMode == OptionsWindow.ScannerMode.TargetingRectangle)
+            {
+                InitializeTargetingRectangle();
+            }
+            else if (scannerMode == OptionsWindow.ScannerMode.AutomaticDetection)
+            {
+                AutomaticScan();
+            }
+        }
+
+        private void InitializeTargetingRectangle()
+        {
+            targetingRectangle = new Rectangle
+            {
+                Stroke = Brushes.Red,
+                StrokeThickness = 2,
+                Width = 200,
+                Height = 200
+            };
+            Canvas.SetLeft(targetingRectangle, 0);
+            Canvas.SetTop(targetingRectangle, 0);
+            ((Canvas)this.Content).Children.Add(targetingRectangle);
+        }
+
+        private void AutomaticScan()
+        {
+            var screenBmp = CaptureScreen();
+            var result = ScanQRCode(ConvertToGrayscale(screenBmp));
+            if (result != null)
+            {
+                DisplayResult(result);
+            }
+            else
+            {
+                MessageBox.Show("No QR code found on the screen.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                this.Close();
+            }
         }
 
         private void QRCodeScannerWindow_KeyDown(object sender, KeyEventArgs e)
@@ -49,16 +93,25 @@ namespace DesktopQRTools
         private void QRCodeScannerWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             startPoint = e.GetPosition(null);
-            SelectionRectangle.Visibility = Visibility.Visible;
-            Canvas.SetLeft(SelectionRectangle, startPoint.X);
-            Canvas.SetTop(SelectionRectangle, startPoint.Y);
-            SelectionRectangle.Width = 0;
-            SelectionRectangle.Height = 0;
+            if (scannerMode == OptionsWindow.ScannerMode.DrawBox)
+            {
+                SelectionRectangle.Visibility = Visibility.Visible;
+                Canvas.SetLeft(SelectionRectangle, startPoint.X);
+                Canvas.SetTop(SelectionRectangle, startPoint.Y);
+                SelectionRectangle.Width = 0;
+                SelectionRectangle.Height = 0;
+            }
         }
 
         private void QRCodeScannerWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (scannerMode == OptionsWindow.ScannerMode.TargetingRectangle)
+            {
+                var currentPoint = e.GetPosition(null);
+                Canvas.SetLeft(targetingRectangle, currentPoint.X - targetingRectangle.Width / 2);
+                Canvas.SetTop(targetingRectangle, currentPoint.Y - targetingRectangle.Height / 2);
+            }
+            else if (scannerMode == OptionsWindow.ScannerMode.DrawBox && e.LeftButton == MouseButtonState.Pressed)
             {
                 System.Windows.Point currentPoint = e.GetPosition(null);
                 double x = Math.Min(startPoint.X, currentPoint.X);
@@ -76,7 +129,16 @@ namespace DesktopQRTools
         private void QRCodeScannerWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             System.Windows.Point endPoint = e.GetPosition(null);
-            CaptureAndScanQRCode(startPoint, endPoint);
+            if (scannerMode == OptionsWindow.ScannerMode.DrawBox)
+            {
+                CaptureAndScanQRCode(startPoint, endPoint);
+            }
+            else if (scannerMode == OptionsWindow.ScannerMode.TargetingRectangle)
+            {
+                double x = Canvas.GetLeft(targetingRectangle);
+                double y = Canvas.GetTop(targetingRectangle);
+                CaptureAndScanQRCode(new Point(x, y), new Point(x + targetingRectangle.Width, y + targetingRectangle.Height));
+            }
         }
 
         private void ResetUI()
@@ -104,13 +166,28 @@ namespace DesktopQRTools
                 // Show the window again
                 this.Visibility = Visibility.Visible;
 
-                // Crop the captured screen to the selected area
-                var croppedBmp = new CroppedBitmap(screenBmp, new Int32Rect(x, y, width, height));
+                WriteableBitmap bitmapToScan;
+                if (scannerMode == OptionsWindow.ScannerMode.AutomaticDetection)
+                {
+                    bitmapToScan = screenBmp;
+                }
+                else
+                {
+                    // Crop the captured screen to the selected area
+                    var croppedBmp = new CroppedBitmap(screenBmp, new Int32Rect(x, y, width, height));
+                    bitmapToScan = ConvertToGrayscale(croppedBmp);
+                }
 
-                // Convert to grayscale for better recognition
-                var grayscaleBmp = ConvertToGrayscale(croppedBmp);
-
-                return ScanQRCode(grayscaleBmp);
+                var result = ScanQRCode(bitmapToScan);
+                if (result != null)
+                {
+                    DisplayResult(result);
+                }
+                else
+                {
+                    MessageBox.Show("No QR code found in the selected area.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                return result;
             }
             catch (Exception ex)
             {
