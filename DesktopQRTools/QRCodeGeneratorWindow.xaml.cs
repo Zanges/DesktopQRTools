@@ -30,9 +30,19 @@ namespace DesktopQRTools
             LoadConfiguration();
         }
 
-        private void LoadConfiguration()
+        public QRCodeGeneratorWindow(string configPath)
         {
-            string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
+            InitializeComponent();
+            LoadConfiguration(configPath);
+        }
+
+        private void LoadConfiguration(string configFilePath = null)
+        {
+            if (configFilePath == null)
+            {
+                configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
+            }
+
             if (File.Exists(configFilePath))
             {
                 string[] lines = File.ReadAllLines(configFilePath);

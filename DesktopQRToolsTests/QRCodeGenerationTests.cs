@@ -21,12 +21,6 @@ namespace DesktopQRToolsTests
         [SetUp]
         public void Setup()
         {
-            var dispatcher = Dispatcher.CurrentDispatcher;
-            dispatcher.Invoke(() =>
-            {
-                _generatorWindow = new QRCodeGeneratorWindow();
-            });
-
             // Create a test config file
             _testConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "test_config.ini");
             File.WriteAllText(_testConfigPath, 
@@ -35,6 +29,12 @@ namespace DesktopQRToolsTests
                 "AutoSaveDirectory=TestDir\n" +
                 "AppendDate=true\n" +
                 "AppendTime=true");
+
+            var dispatcher = Dispatcher.CurrentDispatcher;
+            dispatcher.Invoke(() =>
+            {
+                _generatorWindow = new QRCodeGeneratorWindow(_testConfigPath);
+            });
         }
 
         [TearDown]
