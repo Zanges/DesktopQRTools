@@ -1,4 +1,5 @@
 using System;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using DesktopQRTools;
@@ -13,6 +14,7 @@ namespace DesktopQRToolsTests
     public class QRCodeTests
     {
         private QRCodeGeneratorWindow _generatorWindow;
+        private QRCodeScannerWindow _scannerWindow;
 
         [SetUp]
         public void Setup()
@@ -21,6 +23,7 @@ namespace DesktopQRToolsTests
             dispatcher.Invoke(() =>
             {
                 _generatorWindow = new QRCodeGeneratorWindow();
+                _scannerWindow = new QRCodeScannerWindow();
             });
         }
 
@@ -63,25 +66,16 @@ namespace DesktopQRToolsTests
             WriteableBitmap qrCode = _generatorWindow.GenerateQRCode(testContent);
 
             // Act
-            string? scannedContent = ScanQRCode(qrCode);
+            string? scannedContent = null;
+            _scannerWindow.Dispatcher.Invoke(() =>
+            {
+                var startPoint = new Point(0, 0);
+                var endPoint = new Point(qrCode.PixelWidth, qrCode.PixelHeight);
+                scannedContent = _scannerWindow.CaptureAndScanQRCode(startPoint, endPoint, qrCode);
+            });
 
             // Assert
             Assert.That(scannedContent, Is.EqualTo(testContent), "Scanned content should match the original content");
-        }
-
-        private string? ScanQRCode(WriteableBitmap qrCode)
-        {
-            BarcodeReader<WriteableBitmap> reader = new BarcodeReader<WriteableBitmap>(null, null, null)
-            {
-                Options = new DecodingOptions
-                {
-                    TryHarder = true,
-                    PossibleFormats = new[] { BarcodeFormat.QR_CODE }
-                }
-            };
-
-            Result result = reader.Decode(qrCode);
-            return result?.Text;
         }
     }
 }

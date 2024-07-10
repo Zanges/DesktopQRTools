@@ -85,7 +85,7 @@ namespace DesktopQRTools
             InstructionsTextBlock.Visibility = Visibility.Visible;
         }
 
-        private void CaptureAndScanQRCode(System.Windows.Point startPoint, System.Windows.Point endPoint)
+        public string? CaptureAndScanQRCode(System.Windows.Point startPoint, System.Windows.Point endPoint)
         {
             try
             {
@@ -110,30 +110,62 @@ namespace DesktopQRTools
                 // Convert to grayscale for better recognition
                 var grayscaleBmp = ConvertToGrayscale(croppedBmp);
 
-                BarcodeReader reader = new BarcodeReader
-                {
-                    Options = new DecodingOptions
-                    {
-                        TryHarder = true,
-                        PossibleFormats = new[] { BarcodeFormat.QR_CODE }
-                    }
-                };
-
-                Result result = reader.Decode(grayscaleBmp);
-
-                if (result != null)
-                {
-                    DisplayResult(result.Text);
-                }
-                else
-                {
-                    MessageBox.Show("No QR code found in the selected area.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+                return ScanQRCode(grayscaleBmp);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error in CaptureAndScanQRCode: {ex.Message}");
                 MessageBox.Show($"An error occurred while scanning: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+        }
+
+        public string? CaptureAndScanQRCode(System.Windows.Point startPoint, System.Windows.Point endPoint, WriteableBitmap testBitmap)
+        {
+            try
+            {
+                int x = (int)Math.Min(startPoint.X, endPoint.X);
+                int y = (int)Math.Min(startPoint.Y, endPoint.Y);
+                int width = (int)Math.Abs(endPoint.X - startPoint.X);
+                int height = (int)Math.Abs(endPoint.Y - startPoint.Y);
+
+                // Crop the test bitmap to the selected area
+                var croppedBmp = new CroppedBitmap(testBitmap, new Int32Rect(x, y, width, height));
+
+                // Convert to grayscale for better recognition
+                var grayscaleBmp = ConvertToGrayscale(croppedBmp);
+
+                return ScanQRCode(grayscaleBmp);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in CaptureAndScanQRCode: {ex.Message}");
+                MessageBox.Show($"An error occurred while scanning: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+        }
+
+        private string? ScanQRCode(WriteableBitmap bitmap)
+        {
+            BarcodeReader reader = new BarcodeReader
+            {
+                Options = new DecodingOptions
+                {
+                    TryHarder = true,
+                    PossibleFormats = new[] { BarcodeFormat.QR_CODE }
+                }
+            };
+
+            Result result = reader.Decode(bitmap);
+
+            if (result != null)
+            {
+                return result.Text;
+            }
+            else
+            {
+                MessageBox.Show("No QR code found in the selected area.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return null;
             }
         }
 
