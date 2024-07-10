@@ -6,6 +6,7 @@ using ZXing;
 using ZXing.QrCode;
 using ZXing.Common;
 using ZXing.Windows.Compatibility;
+using ZXing.Windows.Compatibility.Rendering;
 
 namespace DesktopQRToolsTests
 {
@@ -17,7 +18,6 @@ namespace DesktopQRToolsTests
         [SetUp]
         public void Setup()
         {
-            _generatorWindow = null;
             var dispatcher = Dispatcher.CurrentDispatcher;
             dispatcher.Invoke(() =>
             {
