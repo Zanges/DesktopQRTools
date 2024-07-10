@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using ZXing;
 using ZXing.QrCode;
 using ZXing.Windows.Compatibility;
+using ZXing.Common;
 using System.Windows.Interop;
 using System.Diagnostics;
 

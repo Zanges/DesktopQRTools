@@ -15,8 +15,8 @@ namespace DesktopQRTools
     /// </summary>
     public partial class QRCodeGeneratorWindow : Window
     {
-        private WriteableBitmap _generatedQRCode;
-        private string _qrCodeContent;
+        private WriteableBitmap? _generatedQRCode;
+        private string? _qrCodeContent;
 
         public QRCodeGeneratorWindow()
         {
