@@ -224,7 +224,7 @@ namespace DesktopQRTools
             }
         }
 
-        private string GetAutoSaveFileName()
+        public string GetAutoSaveFileName()
         {
             string fileName = _autoSaveQRCodeName;
             if (_appendDate)

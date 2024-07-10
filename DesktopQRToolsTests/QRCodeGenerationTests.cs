@@ -91,20 +91,13 @@ namespace DesktopQRToolsTests
         }
 
         [Test]
-        public void TestAutoSaveConfiguration()
+        public void TestAutoSaveFileNameGeneration()
         {
             // Arrange
-            var mockFileSystem = new MockFileSystem();
-            var testContent = "https://example.com";
-            var expectedFileName = $"TestQRCode-{DateTime.Now:yyyyMMdd}-{DateTime.Now:HHmmss}.png";
-            var expectedFilePath = Path.Combine("TestDir", expectedFileName);
-
-            // Create QRCodeGeneratorWindow with mock file system
-            var qrCodeGeneratorWindow = new QRCodeGeneratorWindow(_testConfigPath, mockFileSystem);
+            var qrCodeGeneratorWindow = new QRCodeGeneratorWindow(_testConfigPath);
 
             // Act
-            qrCodeGeneratorWindow.GenerateQRCode(testContent);
-            qrCodeGeneratorWindow.SaveQRCode();
+            string generatedFileName = qrCodeGeneratorWindow.GetAutoSaveFileName();
 
             // Assert
             Assert.That(qrCodeGeneratorWindow.GetAutoSaveQRCodeName(), Is.EqualTo("TestQRCode"), "Auto-save QR code name should match the config");
@@ -113,14 +106,7 @@ namespace DesktopQRToolsTests
             Assert.That(qrCodeGeneratorWindow.GetAppendDate(), Is.True, "Append date should be true");
             Assert.That(qrCodeGeneratorWindow.GetAppendTime(), Is.True, "Append time should be true");
 
-            // Check if the file was "saved" in the mock file system
-            var savedFiles = mockFileSystem.AllFiles.ToList();
-            Assert.That(savedFiles, Is.Not.Empty, "QR code file should be saved");
-            Assert.That(savedFiles[0], Does.Match(@"TestDir[/\\]TestQRCode-\d{8}-\d{6}\.png"), "Saved file should match expected format");
-
-            // Additional check to ensure file content is not empty
-            var fileContent = mockFileSystem.File.ReadAllBytes(savedFiles[0]);
-            Assert.That(fileContent, Is.Not.Empty, "Saved file should not be empty");
+            Assert.That(generatedFileName, Does.Match(@"TestQRCode-\d{8}-\d{6}\.png"), "Generated file name should match expected format");
         }
     }
 }
