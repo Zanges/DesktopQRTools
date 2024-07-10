@@ -99,7 +99,7 @@ namespace DesktopQRTools
         /// <returns>A bitmap image of the generated QR code.</returns>
         private WriteableBitmap GenerateQRCode(string text)
         {
-            var writer = new BarcodeWriter
+            var writer = new BarcodeWriterPixelData
             {
                 Format = BarcodeFormat.QR_CODE,
                 Options = new QrCodeEncodingOptions
@@ -111,17 +111,11 @@ namespace DesktopQRTools
                 }
             };
 
-            var bitmap = writer.Write(text);
-            var visual = new DrawingVisual();
-            using (var drawingContext = visual.RenderOpen())
-            {
-                drawingContext.DrawImage(ConvertToBitmapSource(bitmap), new Rect(0, 0, 300, 300));
-            }
+            var pixelData = writer.Write(text);
+            var bitmap = new WriteableBitmap(pixelData.Width, pixelData.Height, 96, 96, PixelFormats.Bgr32, null);
+            bitmap.WritePixels(new Int32Rect(0, 0, pixelData.Width, pixelData.Height), pixelData.Pixels, pixelData.Width * 4, 0);
 
-            var renderBitmap = new RenderTargetBitmap(300, 300, 96, 96, PixelFormats.Pbgra32);
-            renderBitmap.Render(visual);
-
-            return new WriteableBitmap(renderBitmap);
+            return bitmap;
         }
 
         /// <summary>
