@@ -26,7 +26,7 @@ namespace DesktopQRTools
         private bool _appendDate = false;
         private bool _appendTime = false;
 
-        public virtual IFileSystem FileSystem { get; set; } = new FileSystem();
+        public virtual IFileSystem FileSystem { get; protected set; } = new FileSystem();
 
         public QRCodeGeneratorWindow()
         {
