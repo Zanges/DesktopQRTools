@@ -112,8 +112,16 @@ namespace DesktopQRTools
             };
 
             var bitmap = writer.Write(text);
-            var bitmapSource = ConvertToBitmapSource(bitmap);
-            return new WriteableBitmap(bitmapSource);
+            var visual = new DrawingVisual();
+            using (var drawingContext = visual.RenderOpen())
+            {
+                drawingContext.DrawImage(ConvertToBitmapSource(bitmap), new Rect(0, 0, 300, 300));
+            }
+
+            var renderBitmap = new RenderTargetBitmap(300, 300, 96, 96, PixelFormats.Pbgra32);
+            renderBitmap.Render(visual);
+
+            return new WriteableBitmap(renderBitmap);
         }
 
         /// <summary>
