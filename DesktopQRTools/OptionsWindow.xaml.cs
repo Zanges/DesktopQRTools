@@ -36,7 +36,7 @@ namespace DesktopQRTools
 
                 using (StreamWriter writer = new StreamWriter(configFilePath))
                 {
-                    writer.WriteLine($"DefaultQRCodeName={DefaultQRCodeNameTextBox.Text}");
+                    writer.WriteLine($"AutoSaveQRCodeName={DefaultQRCodeNameTextBox.Text}");
                     writer.WriteLine($"SkipSaveDialog={SkipSaveDialogCheckBox.IsChecked}");
                     writer.WriteLine($"AutoSaveDirectory={AutoSaveDirectoryTextBox.Text}");
                     writer.WriteLine($"AppendDate={AppendDateCheckBox.IsChecked}");
@@ -69,7 +69,7 @@ namespace DesktopQRTools
                         {
                             switch (parts[0])
                             {
-                                case "DefaultQRCodeName":
+                                case "AutoSaveQRCodeName":
                                     DefaultQRCodeNameTextBox.Text = parts[1];
                                     break;
                                 case "SkipSaveDialog":
