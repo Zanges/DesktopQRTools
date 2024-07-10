@@ -153,53 +153,15 @@ namespace DesktopQRTools
 
         private void DisplayResult(string content)
         {
-            ResultTextBlock.Text = content;
-            ResultPanel.Visibility = Visibility.Visible;
-            InstructionsTextBlock.Visibility = Visibility.Collapsed;
-            SelectionRectangle.Visibility = Visibility.Collapsed;
+            QRCodeResultWindow resultWindow = new QRCodeResultWindow(content);
+            resultWindow.Show();
 
-            if (Uri.TryCreate(content, UriKind.Absolute, out Uri uriResult) && 
-                (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+            if (content.Length <= 50)
             {
-                OpenLinkButton.Visibility = Visibility.Visible;
-                SaveContentButton.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                OpenLinkButton.Visibility = Visibility.Collapsed;
-                SaveContentButton.Visibility = Visibility.Visible;
+                MessageBox.Show($"Scanned content: {content}", "QR Code Content", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
-            ScanAgainButton.Visibility = Visibility.Visible;
-        }
-
-        private void ScanAgainButton_Click(object sender, RoutedEventArgs e)
-        {
-            ResetUI();
-        }
-
-        private void OpenLinkButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (Uri.TryCreate(ResultTextBlock.Text, UriKind.Absolute, out Uri uri))
-            {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(uri.AbsoluteUri) { UseShellExecute = true });
-            }
-        }
-
-        private void SaveContentButton_Click(object sender, RoutedEventArgs e)
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog
-            {
-                Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
-                DefaultExt = "txt",
-                AddExtension = true
-            };
-
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                File.WriteAllText(saveFileDialog.FileName, ResultTextBlock.Text);
-                MessageBox.Show("Content saved successfully.", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            this.Close();
         }
 
         private BitmapSource CaptureScreen()
