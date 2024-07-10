@@ -30,19 +30,6 @@ namespace DesktopQRTools
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
             this.WindowState = WindowState.Maximized;
-
-            // Add instructions for the user
-            TextBlock instructions = new TextBlock
-            {
-                Text = "Click and drag to select the area containing the QR code",
-                FontSize = 24,
-                Foreground = Brushes.White,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Top,
-                Margin = new Thickness(0, 50, 0, 0)
-            };
-            Grid.SetZIndex(instructions, 1);
-            ((Grid)this.Content).Children.Add(instructions);
         }
 
         private void QRCodeScannerWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
