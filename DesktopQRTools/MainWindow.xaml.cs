@@ -1,23 +1,39 @@
-﻿using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
-namespace DesktopQRTools;
-
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
-public partial class MainWindow : Window
+namespace DesktopQRTools
 {
-    public MainWindow()
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
     {
-        InitializeComponent();
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        /// <summary>
+        /// Event handler for the Create QR Code button click.
+        /// Opens a new window for QR code creation.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
+        private void CreateQRCodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            QRCodeGeneratorWindow qrCodeGeneratorWindow = new QRCodeGeneratorWindow();
+            qrCodeGeneratorWindow.Show();
+        }
+
+        /// <summary>
+        /// Event handler for the Scan QR Code button click.
+        /// Initiates the process to scan a QR code on the screen.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
+        private void ScanQRCodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: Implement QR code scanning functionality
+            MessageBox.Show("QR Code scanning functionality will be implemented soon.", "Not Implemented", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
     }
 }
