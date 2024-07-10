@@ -117,6 +117,10 @@ namespace DesktopQRToolsTests
             var savedFiles = mockFileSystem.AllFiles.ToList();
             Assert.That(savedFiles, Is.Not.Empty, "QR code file should be saved");
             Assert.That(savedFiles[0], Does.Match(@"TestDir[/\\]TestQRCode-\d{8}-\d{6}\.png"), "Saved file should match expected format");
+
+            // Additional check to ensure file content is not empty
+            var fileContent = mockFileSystem.File.ReadAllBytes(savedFiles[0]);
+            Assert.That(fileContent, Is.Not.Empty, "Saved file should not be empty");
         }
     }
 }

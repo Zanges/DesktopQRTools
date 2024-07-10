@@ -209,6 +209,7 @@ namespace DesktopQRTools
                 PngBitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(bitmap));
                 encoder.Save(stream);
+                stream.Flush();
             }
         }
 
