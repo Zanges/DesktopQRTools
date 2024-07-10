@@ -39,6 +39,8 @@ namespace DesktopQRTools
                     writer.WriteLine($"DefaultQRCodeName={DefaultQRCodeNameTextBox.Text}");
                     writer.WriteLine($"SkipSaveDialog={SkipSaveDialogCheckBox.IsChecked}");
                     writer.WriteLine($"AutoSaveDirectory={AutoSaveDirectoryTextBox.Text}");
+                    writer.WriteLine($"AppendDate={AppendDateCheckBox.IsChecked}");
+                    writer.WriteLine($"AppendTime={AppendTimeCheckBox.IsChecked}");
                 }
 
                 return true;
@@ -76,6 +78,14 @@ namespace DesktopQRTools
                                     break;
                                 case "AutoSaveDirectory":
                                     AutoSaveDirectoryTextBox.Text = parts[1];
+                                    break;
+                                case "AppendDate":
+                                    if (bool.TryParse(parts[1], out bool appendDate))
+                                        AppendDateCheckBox.IsChecked = appendDate;
+                                    break;
+                                case "AppendTime":
+                                    if (bool.TryParse(parts[1], out bool appendTime))
+                                        AppendTimeCheckBox.IsChecked = appendTime;
                                     break;
                             }
                         }
