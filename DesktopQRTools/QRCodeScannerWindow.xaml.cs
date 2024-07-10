@@ -5,8 +5,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using ZXing;
+using ZXing.QrCode;
 using ZXing.Windows.Compatibility;
 using System.Windows.Interop;
+using System.Diagnostics;
 
 namespace DesktopQRTools
 {
@@ -68,35 +70,74 @@ namespace DesktopQRTools
 
         private void CaptureAndScanQRCode(System.Windows.Point startPoint, System.Windows.Point endPoint)
         {
-            int x = (int)Math.Min(startPoint.X, endPoint.X);
-            int y = (int)Math.Min(startPoint.Y, endPoint.Y);
-            int width = (int)Math.Abs(endPoint.X - startPoint.X);
-            int height = (int)Math.Abs(endPoint.Y - startPoint.Y);
-
-            // Hide this window before capturing the screen
-            this.Visibility = Visibility.Hidden;
-            System.Threading.Thread.Sleep(100); // Give time for the window to hide
-
-            // Capture the screen
-            var screenBmp = CaptureScreen();
-
-            // Show the window again
-            this.Visibility = Visibility.Visible;
-
-            // Crop the captured screen to the selected area
-            var croppedBmp = new CroppedBitmap(screenBmp, new Int32Rect(x, y, width, height));
-
-            BarcodeReader reader = new BarcodeReader();
-            Result result = reader.Decode(croppedBmp);
-
-            if (result != null)
+            try
             {
-                MessageBox.Show($"QR Code content: {result.Text}", "QR Code Scanned", MessageBoxButton.OK, MessageBoxImage.Information);
+                int x = (int)Math.Min(startPoint.X, endPoint.X);
+                int y = (int)Math.Min(startPoint.Y, endPoint.Y);
+                int width = (int)Math.Abs(endPoint.X - startPoint.X);
+                int height = (int)Math.Abs(endPoint.Y - startPoint.Y);
+
+                // Hide this window before capturing the screen
+                this.Visibility = Visibility.Hidden;
+                System.Threading.Thread.Sleep(100); // Give time for the window to hide
+
+                // Capture the screen
+                var screenBmp = CaptureScreen();
+
+                // Show the window again
+                this.Visibility = Visibility.Visible;
+
+                // Crop the captured screen to the selected area
+                var croppedBmp = new CroppedBitmap(screenBmp, new Int32Rect(x, y, width, height));
+
+                // Convert to grayscale for better recognition
+                var grayscaleBmp = ConvertToGrayscale(croppedBmp);
+
+                BarcodeReader reader = new BarcodeReader
+                {
+                    Options = new DecodingOptions
+                    {
+                        TryHarder = true,
+                        PossibleFormats = new[] { BarcodeFormat.QR_CODE }
+                    }
+                };
+
+                Result result = reader.Decode(grayscaleBmp);
+
+                if (result != null)
+                {
+                    MessageBox.Show($"QR Code content: {result.Text}", "QR Code Scanned", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("No QR code found in the selected area.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("No QR code found in the selected area.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Debug.WriteLine($"Error in CaptureAndScanQRCode: {ex.Message}");
+                MessageBox.Show($"An error occurred while scanning: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private WriteableBitmap ConvertToGrayscale(BitmapSource source)
+        {
+            var stride = (source.PixelWidth * source.Format.BitsPerPixel + 7) / 8;
+            var pixels = new byte[stride * source.PixelHeight];
+            source.CopyPixels(pixels, stride, 0);
+
+            for (int i = 0; i < pixels.Length; i += 4)
+            {
+                var gray = (byte)(0.299 * pixels[i + 2] + 0.587 * pixels[i + 1] + 0.114 * pixels[i]);
+                pixels[i] = gray;
+                pixels[i + 1] = gray;
+                pixels[i + 2] = gray;
+            }
+
+            var grayscaleBitmap = new WriteableBitmap(source.PixelWidth, source.PixelHeight, source.DpiX, source.DpiY, PixelFormats.Bgr32, null);
+            grayscaleBitmap.WritePixels(new Int32Rect(0, 0, source.PixelWidth, source.PixelHeight), pixels, stride, 0);
+
+            return grayscaleBitmap;
         }
 
         private BitmapSource CaptureScreen()
