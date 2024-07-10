@@ -18,10 +18,50 @@ namespace DesktopQRTools
     {
         private WriteableBitmap? _generatedQRCode;
         private string? _qrCodeContent;
+        private string _autoSaveQRCodeName = "QRCode";
+        private string _autoSaveDirectory = "";
+        private bool _skipSaveDialog = false;
+        private bool _appendDate = false;
+        private bool _appendTime = false;
 
         public QRCodeGeneratorWindow()
         {
             InitializeComponent();
+            LoadConfiguration();
+        }
+
+        private void LoadConfiguration()
+        {
+            string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
+            if (File.Exists(configFilePath))
+            {
+                string[] lines = File.ReadAllLines(configFilePath);
+                foreach (string line in lines)
+                {
+                    string[] parts = line.Split('=');
+                    if (parts.Length == 2)
+                    {
+                        switch (parts[0])
+                        {
+                            case "AutoSaveQRCodeName":
+                                _autoSaveQRCodeName = parts[1];
+                                break;
+                            case "SkipSaveDialog":
+                                bool.TryParse(parts[1], out _skipSaveDialog);
+                                break;
+                            case "AutoSaveDirectory":
+                                _autoSaveDirectory = parts[1];
+                                break;
+                            case "AppendDate":
+                                bool.TryParse(parts[1], out _appendDate);
+                                break;
+                            case "AppendTime":
+                                bool.TryParse(parts[1], out _appendTime);
+                                break;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -66,74 +106,19 @@ namespace DesktopQRTools
                 return;
             }
 
-            string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
-            string autoSaveQRCodeName = "QRCode";
-            string autoSaveDirectory = "";
-            bool skipSaveDialog = false;
-            bool appendDate = false;
-            bool appendTime = false;
-
-            if (File.Exists(configFilePath))
-            {
-                string[] lines = File.ReadAllLines(configFilePath);
-                foreach (string line in lines)
-                {
-                    string[] parts = line.Split('=');
-                    if (parts.Length == 2)
-                    {
-                        switch (parts[0])
-                        {
-                            case "AutoSaveQRCodeName":
-                                autoSaveQRCodeName = parts[1];
-                                break;
-                            case "SkipSaveDialog":
-                                bool.TryParse(parts[1], out skipSaveDialog);
-                                break;
-                            case "AutoSaveDirectory":
-                                autoSaveDirectory = parts[1];
-                                break;
-                            case "AppendDate":
-                                bool.TryParse(parts[1], out appendDate);
-                                break;
-                            case "AppendTime":
-                                bool.TryParse(parts[1], out appendTime);
-                                break;
-                        }
-                    }
-                }
-            }
-
             string fileName;
             string filePath;
 
-            if (skipSaveDialog && !string.IsNullOrEmpty(autoSaveDirectory))
+            if (_skipSaveDialog && !string.IsNullOrEmpty(_autoSaveDirectory))
             {
-                fileName = autoSaveQRCodeName;
-                if (appendDate)
-                    fileName += $"-{DateTime.Now:yyyyMMdd}";
-                if (appendTime)
-                    fileName += $"-{DateTime.Now:HHmmss}";
-                
-                string extension = ImageFormatComboBox.SelectedIndex == 0 ? "png" : "svg";
-                fileName += $".{extension}";
-
-                filePath = Path.Combine(autoSaveDirectory, fileName);
-
-                // If file already exists, append a number
-                int counter = 1;
-                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-                while (File.Exists(filePath))
-                {
-                    fileName = $"{fileNameWithoutExtension}_{counter}.{extension}";
-                    filePath = Path.Combine(autoSaveDirectory, fileName);
-                    counter++;
-                }
+                fileName = GetAutoSaveFileName();
+                filePath = Path.Combine(_autoSaveDirectory, fileName);
             }
             else
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    FileName = autoSaveQRCodeName,
+                    FileName = _autoSaveQRCodeName,
                     Filter = (ImageFormatComboBox.SelectedIndex == 0) ? "PNG Image|*.png" : "SVG Image|*.svg",
                     Title = "Save QR Code Image"
                 };
@@ -255,5 +240,37 @@ namespace DesktopQRTools
             var svgImage = qrCodeWriter.Write(content);
             File.WriteAllText(filePath, svgImage.Content);
         }
+
+        private string GetAutoSaveFileName()
+        {
+            string fileName = _autoSaveQRCodeName;
+            if (_appendDate)
+                fileName += $"-{DateTime.Now:yyyyMMdd}";
+            if (_appendTime)
+                fileName += $"-{DateTime.Now:HHmmss}";
+            
+            string extension = ImageFormatComboBox.SelectedIndex == 0 ? "png" : "svg";
+            fileName += $".{extension}";
+
+            // If file already exists, append a number
+            int counter = 1;
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+            string filePath = Path.Combine(_autoSaveDirectory, fileName);
+            while (File.Exists(filePath))
+            {
+                fileName = $"{fileNameWithoutExtension}_{counter}.{extension}";
+                filePath = Path.Combine(_autoSaveDirectory, fileName);
+                counter++;
+            }
+
+            return fileName;
+        }
+
+        // Methods to support testing
+        public string GetAutoSaveQRCodeName() => _autoSaveQRCodeName;
+        public bool GetSkipSaveDialog() => _skipSaveDialog;
+        public string GetAutoSaveDirectory() => _autoSaveDirectory;
+        public bool GetAppendDate() => _appendDate;
+        public bool GetAppendTime() => _appendTime;
     }
 }
