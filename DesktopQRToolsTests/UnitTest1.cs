@@ -7,6 +7,7 @@ using ZXing;
 using ZXing.QrCode;
 using ZXing.Common;
 using ZXing.Windows.Compatibility;
+using ZXing;
 
 namespace DesktopQRToolsTests
 {
@@ -50,7 +51,14 @@ namespace DesktopQRToolsTests
                 }
             };
 
-            var luminanceSource = new WriteableBitmapLuminanceSource(qrCode);
+            BitmapSource bitmapSource = qrCode;
+            var width = bitmapSource.PixelWidth;
+            var height = bitmapSource.PixelHeight;
+            var stride = width * ((bitmapSource.Format.BitsPerPixel + 7) / 8);
+            var pixels = new byte[height * stride];
+            bitmapSource.CopyPixels(pixels, stride, 0);
+
+            var luminanceSource = new RGBLuminanceSource(pixels, width, height, RGBLuminanceSource.BitmapFormat.BGR32);
             var binarizer = new HybridBinarizer(luminanceSource);
             var binaryBitmap = new BinaryBitmap(binarizer);
 
