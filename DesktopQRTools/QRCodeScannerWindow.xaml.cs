@@ -1,9 +1,11 @@
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using ZXing;
+using ZXing.Windows.Compatibility;
 
 namespace DesktopQRTools
 {
@@ -65,7 +67,7 @@ namespace DesktopQRTools
                     g.CopyFromScreen(x, y, 0, 0, bitmap.Size);
                 }
 
-                BarcodeReader reader = new BarcodeReader();
+                BarcodeReader<Bitmap> reader = new BarcodeReader<Bitmap>();
                 Result result = reader.Decode(bitmap);
 
                 if (result != null)
