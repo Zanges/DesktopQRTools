@@ -137,7 +137,7 @@ namespace DesktopQRTools
             }
         }
 
-        private WriteableBitmap ConvertToGrayscale(BitmapSource source)
+        public WriteableBitmap ConvertToGrayscale(BitmapSource source)
         {
             var stride = (source.PixelWidth * source.Format.BitsPerPixel + 7) / 8;
             var pixels = new byte[stride * source.PixelHeight];

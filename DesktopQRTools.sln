@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopQRTools", "DesktopQRTools\DesktopQRTools.csproj", "{2A69E8F7-D8C5-447E-AC41-D2BE0ED6C7E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopQRTools.Tests", "DesktopQRTools.Tests\DesktopQRTools.Tests.csproj", "{NEW-TEST-PROJECT-GUID}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopQRTools.Tests", "DesktopQRTools.Tests\DesktopQRTools.Tests.csproj", "{00000000-0000-0000-0000-000000000000}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +14,7 @@ Global
 		{2A69E8F7-D8C5-447E-AC41-D2BE0ED6C7E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A69E8F7-D8C5-447E-AC41-D2BE0ED6C7E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A69E8F7-D8C5-447E-AC41-D2BE0ED6C7E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{NEW-TEST-PROJECT-GUID}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{NEW-TEST-PROJECT-GUID}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{NEW-TEST-PROJECT-GUID}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{NEW-TEST-PROJECT-GUID}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
