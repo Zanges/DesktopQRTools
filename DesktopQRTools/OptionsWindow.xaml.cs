@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Windows;
+using Microsoft.Win32;
 
 namespace DesktopQRTools
 {
@@ -22,12 +23,14 @@ namespace DesktopQRTools
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
-            using (var dialog = new FolderBrowserDialog())
+            var dialog = new OpenFolderDialog
             {
-                if (dialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
-                {
-                    AutoSaveDirectoryTextBox.Text = dialog.SelectedPath;
-                }
+                Title = "Select Auto-save Directory"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                AutoSaveDirectoryTextBox.Text = dialog.FolderName;
             }
         }
 
