@@ -49,4 +49,9 @@ namespace DesktopQRTools
             this.Close();
         }
     }
+
+    public bool IsLinkButtonVisible()
+    {
+        return OpenLinkButton.Visibility == Visibility.Visible;
+    }
 }

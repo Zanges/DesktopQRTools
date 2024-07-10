@@ -63,7 +63,7 @@ namespace DesktopQRToolsTests
                 if (scannedContent != null)
                 {
                     var resultWindow = new QRCodeResultWindow(scannedContent);
-                    isOpenLinkButtonVisible = resultWindow.OpenLinkButton?.Visibility == Visibility.Visible;
+                    isOpenLinkButtonVisible = resultWindow.IsLinkButtonVisible();
                 }
             });
 
