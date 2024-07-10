@@ -1,6 +1,4 @@
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -60,24 +58,25 @@ namespace DesktopQRTools
             int width = (int)Math.Abs(endPoint.X - startPoint.X);
             int height = (int)Math.Abs(endPoint.Y - startPoint.Y);
 
-            using (Bitmap bitmap = new Bitmap(width, height))
+            var screenBmp = new BitmapSource(
+                new System.Windows.Int32Rect(x, y, width, height),
+                96, 96,
+                System.Windows.Media.PixelFormats.Bgr32,
+                null,
+                width * height * 4,
+                width * 4
+            );
+
+            BarcodeReader reader = new BarcodeReader();
+            Result result = reader.Decode(screenBmp);
+
+            if (result != null)
             {
-                using (Graphics g = Graphics.FromImage(bitmap))
-                {
-                    g.CopyFromScreen(x, y, 0, 0, bitmap.Size);
-                }
-
-                BarcodeReader<Bitmap> reader = new BarcodeReader<Bitmap>();
-                Result result = reader.Decode(bitmap);
-
-                if (result != null)
-                {
-                    MessageBox.Show($"QR Code content: {result.Text}", "QR Code Scanned", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show("No QR code found in the selected area.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+                MessageBox.Show($"QR Code content: {result.Text}", "QR Code Scanned", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("No QR code found in the selected area.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }

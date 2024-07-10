@@ -4,6 +4,7 @@ using System.Windows.Media.Imaging;
 using ZXing;
 using ZXing.QrCode;
 using ZXing.Windows.Compatibility;
+using System.IO;
 
 namespace DesktopQRTools
 {
@@ -35,7 +36,7 @@ namespace DesktopQRTools
             try
             {
                 var qrCodeBitmap = GenerateQRCode(content);
-                QRCodeImage.Source = ConvertToBitmapSource(qrCodeBitmap);
+                QRCodeImage.Source = qrCodeBitmap;
             }
             catch (Exception ex)
             {
@@ -48,7 +49,7 @@ namespace DesktopQRTools
         /// </summary>
         /// <param name="text">The text to encode in the QR code.</param>
         /// <returns>A bitmap image of the generated QR code.</returns>
-        private System.Drawing.Bitmap GenerateQRCode(string text)
+        private BitmapSource GenerateQRCode(string text)
         {
             var writer = new BarcodeWriterPixelData
             {
@@ -62,20 +63,10 @@ namespace DesktopQRTools
             };
 
             var pixelData = writer.Write(text);
-            var bitmap = new System.Drawing.Bitmap(pixelData.Width, pixelData.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
-            using (var ms = new System.IO.MemoryStream(pixelData.Pixels))
-            {
-                bitmap.SetResolution(96, 96);
-                var bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, pixelData.Width, pixelData.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
-                try
-                {
-                    System.Runtime.InteropServices.Marshal.Copy(pixelData.Pixels, 0, bitmapData.Scan0, pixelData.Pixels.Length);
-                }
-                finally
-                {
-                    bitmap.UnlockBits(bitmapData);
-                }
-            }
+
+            var bitmap = new WriteableBitmap(pixelData.Width, pixelData.Height, 96, 96, System.Windows.Media.PixelFormats.Bgr32, null);
+
+            bitmap.WritePixels(new Int32Rect(0, 0, pixelData.Width, pixelData.Height), pixelData.Pixels, pixelData.Width * 4, 0);
 
             return bitmap;
         }
