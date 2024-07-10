@@ -28,16 +28,10 @@ namespace DesktopQRTools
 
         public virtual IFileSystem FileSystem { get; protected set; } = new FileSystem();
 
-        public QRCodeGeneratorWindow()
+        public QRCodeGeneratorWindow(string? configPath = null)
         {
             InitializeComponent();
-            LoadConfiguration();
-        }
-
-        public QRCodeGeneratorWindow(string configPath)
-        {
-            InitializeComponent();
-            LoadConfiguration(configPath);
+            LoadConfiguration(configPath ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini"));
         }
 
         // Constructor for testing with mock file system
@@ -215,17 +209,6 @@ namespace DesktopQRTools
                 PngBitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(bitmap));
                 encoder.Save(stream);
-            }
-        }
-
-        // Public method for testing
-        public void SaveQRCode()
-        {
-            if (_generatedQRCode != null)
-            {
-                string fileName = GetAutoSaveFileName();
-                string filePath = Path.Combine(_autoSaveDirectory, fileName);
-                SaveQRCodeImage(_generatedQRCode, filePath);
             }
         }
 
