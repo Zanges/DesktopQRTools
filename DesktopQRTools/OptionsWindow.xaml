@@ -31,7 +31,12 @@
                 </Grid>
                 <CheckBox x:Name="AppendDateCheckBox" Content="Append Date to Auto-save  Filename" Margin="0,0,0,5"/>
                 <CheckBox x:Name="AppendTimeCheckBox" Content="Append Time to Auto-save  Filename" Margin="0,0,0,10"/>
-                <TextBlock Text="Scanner Mode:" Margin="0,0,0,5"/>
+            </StackPanel>
+        </GroupBox>
+        
+        <GroupBox Header="QR Scanner Options" Margin="0,10,0,0">
+            <StackPanel>
+                <TextBlock Text="Scanner Mode:" Margin="0,5,0,5"/>
                 <ComboBox x:Name="ScannerModeComboBox" Margin="0,0,0,10">
                     <ComboBoxItem Content="Draw a Box"/>
                     <ComboBoxItem Content="Targeting Rectangle"/>
