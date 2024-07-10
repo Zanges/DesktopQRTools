@@ -22,8 +22,8 @@
                 <TextBox x:Name="AutoSaveQRCodeNameTextBox" Margin="0,0,0,10"/>
                 <TextBlock Text="Auto-save Directory:" Margin="0,0,0,5"/>
                 <TextBox x:Name="AutoSaveDirectoryTextBox" Margin="0,0,0,10"/>
-                <CheckBox x:Name="AppendDateCheckBox" Content="Append Date to Filename" Margin="0,0,0,5"/>
-                <CheckBox x:Name="AppendTimeCheckBox" Content="Append Time to Filename" Margin="0,0,0,10"/>
+                <CheckBox x:Name="AppendDateCheckBox" Content="Append Date to Auto-save  Filename" Margin="0,0,0,5"/>
+                <CheckBox x:Name="AppendTimeCheckBox" Content="Append Time to Auto-save  Filename" Margin="0,0,0,10"/>
             </StackPanel>
         </GroupBox>
         
