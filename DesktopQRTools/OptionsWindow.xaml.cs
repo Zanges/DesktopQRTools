@@ -12,7 +12,7 @@ namespace DesktopQRTools
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO: Implement saving options
-            DesktopQRToolsTests.MessageBoxManager.Show("Options saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Options saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             this.Close();
         }
     }
