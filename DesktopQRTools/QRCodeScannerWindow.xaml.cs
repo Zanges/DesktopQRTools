@@ -12,7 +12,7 @@ namespace DesktopQRTools
     /// </summary>
     public partial class QRCodeScannerWindow : Window
     {
-        private Point startPoint;
+        private System.Windows.Point startPoint;
 
         public QRCodeScannerWindow()
         {
@@ -32,7 +32,7 @@ namespace DesktopQRTools
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                Point currentPoint = e.GetPosition(this);
+                System.Windows.Point currentPoint = e.GetPosition(this);
                 double x = Math.Min(startPoint.X, currentPoint.X);
                 double y = Math.Min(startPoint.Y, currentPoint.Y);
                 double width = Math.Abs(currentPoint.X - startPoint.X);
@@ -46,12 +46,12 @@ namespace DesktopQRTools
 
         private void QRCodeScannerWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            Point endPoint = e.GetPosition(this);
+            System.Windows.Point endPoint = e.GetPosition(this);
             CaptureAndScanQRCode(startPoint, endPoint);
             this.Close();
         }
 
-        private void CaptureAndScanQRCode(Point startPoint, Point endPoint)
+        private void CaptureAndScanQRCode(System.Windows.Point startPoint, System.Windows.Point endPoint)
         {
             int x = (int)Math.Min(startPoint.X, endPoint.X);
             int y = (int)Math.Min(startPoint.Y, endPoint.Y);
