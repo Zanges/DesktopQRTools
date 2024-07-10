@@ -44,6 +44,8 @@ namespace DesktopQRTools
             var optionsWindow = new OptionsWindow();
             scannerMode = optionsWindow.GetScannerMode();
 
+            targetingRectangle = new Rectangle();
+
             if (scannerMode == OptionsWindow.ScannerMode.TargetingRectangle)
             {
                 InitializeTargetingRectangle();
@@ -163,6 +165,7 @@ namespace DesktopQRTools
 
                 // Capture the screen
                 var screenBmp = CaptureScreen();
+                WriteableBitmap writableBmp = new WriteableBitmap(screenBmp);
 
                 // Show the window again
                 this.Visibility = Visibility.Visible;
@@ -290,7 +293,7 @@ namespace DesktopQRTools
                     screenBmp.GetHbitmap(),
                     IntPtr.Zero,
                     Int32Rect.Empty,
-                    BitmapSizeOptions.FromEmptyOptions()) ?? default;
+                    BitmapSizeOptions.FromEmptyOptions())!;
             }
         }
     }
