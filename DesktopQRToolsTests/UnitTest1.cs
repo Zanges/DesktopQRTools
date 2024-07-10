@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using DesktopQRTools;
 using ZXing;
 using ZXing.QrCode;
@@ -7,7 +8,7 @@ using ZXing.Common;
 
 namespace DesktopQRToolsTests
 {
-    [TestFixture]
+    [TestFixture, Apartment(ApartmentState.STA)]
     public class QRCodeTests
     {
         private QRCodeGeneratorWindow _generatorWindow;
@@ -15,7 +16,12 @@ namespace DesktopQRToolsTests
         [SetUp]
         public void Setup()
         {
-            _generatorWindow = new QRCodeGeneratorWindow();
+            _generatorWindow = null;
+            var dispatcher = Dispatcher.CurrentDispatcher;
+            dispatcher.Invoke(() =>
+            {
+                _generatorWindow = new QRCodeGeneratorWindow();
+            });
         }
 
         [Test]
