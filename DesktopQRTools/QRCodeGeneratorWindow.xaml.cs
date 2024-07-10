@@ -223,6 +223,31 @@ namespace DesktopQRTools
             }
         }
 
+        private string GetAutoSaveFileName()
+        {
+            string fileName = _autoSaveQRCodeName;
+            if (_appendDate)
+                fileName += $"-{DateTime.Now:yyyyMMdd}";
+            if (_appendTime)
+                fileName += $"-{DateTime.Now:HHmmss}";
+            
+            string extension = ImageFormatComboBox.SelectedIndex == 0 ? "png" : "svg";
+            fileName += $".{extension}";
+
+            // If file already exists, append a number
+            int counter = 1;
+            string fileNameWithoutExtension = FileSystem.Path.GetFileNameWithoutExtension(fileName);
+            string filePath = FileSystem.Path.Combine(_autoSaveDirectory, fileName);
+            while (FileSystem.File.Exists(filePath))
+            {
+                fileName = $"{fileNameWithoutExtension}_{counter}.{extension}";
+                filePath = FileSystem.Path.Combine(_autoSaveDirectory, fileName);
+                counter++;
+            }
+
+            return fileName;
+        }
+
         /// <summary>
         /// Converts a System.Drawing.Bitmap to a BitmapSource for WPF display.
         /// </summary>
