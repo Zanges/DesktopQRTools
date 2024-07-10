@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.IO.Abstractions;
+using System.IO.Abstractions.TestingHelpers;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -9,6 +11,7 @@ using ZXing.QrCode;
 using ZXing.Common;
 using ZXing.Windows.Compatibility;
 using NUnit.Framework;
+using Moq;
 
 namespace DesktopQRToolsTests
 {
@@ -91,22 +94,29 @@ namespace DesktopQRToolsTests
         public void TestAutoSaveConfiguration()
         {
             // Arrange
-            string testContent = "https://example.com";
-            string expectedFileName = $"TestQRCode-{DateTime.Now:yyyyMMdd}-{DateTime.Now:HHmmss}.png";
-            string expectedFilePath = Path.Combine("TestDir", expectedFileName);
+            var mockFileSystem = new MockFileSystem();
+            var testContent = "https://example.com";
+            var expectedFileName = $"TestQRCode-{DateTime.Now:yyyyMMdd}-{DateTime.Now:HHmmss}.png";
+            var expectedFilePath = Path.Combine("TestDir", expectedFileName);
+
+            // Mock the file system in QRCodeGeneratorWindow
+            var mockQRCodeGeneratorWindow = new Mock<QRCodeGeneratorWindow>(_testConfigPath);
+            mockQRCodeGeneratorWindow.Setup(w => w.FileSystem).Returns(mockFileSystem);
+            mockQRCodeGeneratorWindow.CallBase = true;
 
             // Act
-            _generatorWindow.GenerateQRCode(testContent);
-            
-            // We need to mock the file saving process here
-            // For now, we'll just check if the configuration is read correctly
+            mockQRCodeGeneratorWindow.Object.GenerateQRCode(testContent);
+            mockQRCodeGeneratorWindow.Object.SaveQRCode();
 
             // Assert
-            Assert.That(_generatorWindow.GetAutoSaveQRCodeName(), Is.EqualTo("TestQRCode"), "Auto-save QR code name should match the config");
-            Assert.That(_generatorWindow.GetSkipSaveDialog(), Is.True, "Skip save dialog should be true");
-            Assert.That(_generatorWindow.GetAutoSaveDirectory(), Is.EqualTo("TestDir"), "Auto-save directory should match the config");
-            Assert.That(_generatorWindow.GetAppendDate(), Is.True, "Append date should be true");
-            Assert.That(_generatorWindow.GetAppendTime(), Is.True, "Append time should be true");
+            Assert.That(mockQRCodeGeneratorWindow.Object.GetAutoSaveQRCodeName(), Is.EqualTo("TestQRCode"), "Auto-save QR code name should match the config");
+            Assert.That(mockQRCodeGeneratorWindow.Object.GetSkipSaveDialog(), Is.True, "Skip save dialog should be true");
+            Assert.That(mockQRCodeGeneratorWindow.Object.GetAutoSaveDirectory(), Is.EqualTo("TestDir"), "Auto-save directory should match the config");
+            Assert.That(mockQRCodeGeneratorWindow.Object.GetAppendDate(), Is.True, "Append date should be true");
+            Assert.That(mockQRCodeGeneratorWindow.Object.GetAppendTime(), Is.True, "Append time should be true");
+
+            // Check if the file was "saved" in the mock file system
+            Assert.That(mockFileSystem.FileExists(expectedFilePath), Is.True, "QR code file should be saved");
         }
     }
 }

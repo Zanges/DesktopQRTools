@@ -5,6 +5,7 @@ using ZXing;
 using ZXing.QrCode;
 using ZXing.Windows.Compatibility;
 using System.IO;
+using System.IO.Abstractions;
 using Microsoft.Win32;
 using System.Windows.Media;
 using System.Configuration;
@@ -24,6 +25,8 @@ namespace DesktopQRTools
         private bool _appendDate = false;
         private bool _appendTime = false;
 
+        public IFileSystem FileSystem { get; set; } = new FileSystem();
+
         public QRCodeGeneratorWindow()
         {
             InitializeComponent();
@@ -34,6 +37,12 @@ namespace DesktopQRTools
         {
             InitializeComponent();
             LoadConfiguration(configPath);
+        }
+
+        // Constructor for testing with mock file system
+        public QRCodeGeneratorWindow(string configPath, IFileSystem fileSystem) : this(configPath)
+        {
+            FileSystem = fileSystem;
         }
 
         private void LoadConfiguration(string configFilePath = null)
@@ -200,11 +209,22 @@ namespace DesktopQRTools
         /// <param name="filePath">The file path to save the image.</param>
         private void SaveQRCodeImage(WriteableBitmap bitmap, string filePath)
         {
-            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+            using (var stream = FileSystem.File.Create(filePath))
             {
                 PngBitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(bitmap));
                 encoder.Save(stream);
+            }
+        }
+
+        // Public method for testing
+        public void SaveQRCode()
+        {
+            if (_generatedQRCode != null)
+            {
+                string fileName = GetAutoSaveFileName();
+                string filePath = Path.Combine(_autoSaveDirectory, fileName);
+                SaveQRCodeImage(_generatedQRCode, filePath);
             }
         }
 
