@@ -33,7 +33,7 @@ namespace DesktopQRToolsTests
             Assert.That(qrCode.PixelHeight, Is.EqualTo(300), "QR code height should be 300 pixels");
 
             // Decode the generated QR code
-            BarcodeReader<WriteableBitmap> reader = new BarcodeReader<WriteableBitmap>
+            BarcodeReader<WriteableBitmap> reader = new BarcodeReader<WriteableBitmap>(null, null, null)
             {
                 Options = new DecodingOptions
                 {
@@ -62,7 +62,7 @@ namespace DesktopQRToolsTests
 
         private string? ScanQRCode(WriteableBitmap qrCode)
         {
-            BarcodeReader<WriteableBitmap> reader = new BarcodeReader<WriteableBitmap>
+            BarcodeReader<WriteableBitmap> reader = new BarcodeReader<WriteableBitmap>(null, null, null)
             {
                 Options = new DecodingOptions
                 {
