@@ -17,6 +17,16 @@
         <TextBox x:Name="ContentTextBox" Grid.Row="0" Height="100" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,10"/>
         <Image x:Name="QRCodeImage" Grid.Row="1" Stretch="Uniform" Margin="0,0,0,10"/>
         <Button x:Name="GenerateButton" Grid.Row="2" Content="Generate QR Code" Click="GenerateButton_Click" Margin="0,0,0,10"/>
-        <Button x:Name="SaveButton" Grid.Row="3" Content="Save QR Code" Click="SaveButton_Click" IsEnabled="False"/>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="SaveButton" Grid.Column="0" Content="Save QR Code" Click="SaveButton_Click" IsEnabled="False"/>
+            <ComboBox x:Name="ImageFormatComboBox" Grid.Column="1" Width="80" Margin="10,0,0,0" SelectedIndex="0">
+                <ComboBoxItem Content="PNG"/>
+                <ComboBoxItem Content="SVG"/>
+            </ComboBox>
+        </Grid>
     </Grid>
 </Window>

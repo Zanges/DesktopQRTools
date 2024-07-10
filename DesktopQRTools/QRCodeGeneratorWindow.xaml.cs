@@ -6,6 +6,7 @@ using ZXing.QrCode;
 using ZXing.Windows.Compatibility;
 using System.IO;
 using Microsoft.Win32;
+using System.Windows.Media;
 
 namespace DesktopQRTools
 {
@@ -15,6 +16,7 @@ namespace DesktopQRTools
     public partial class QRCodeGeneratorWindow : Window
     {
         private WriteableBitmap _generatedQRCode;
+        private string _qrCodeContent;
 
         public QRCodeGeneratorWindow()
         {
@@ -38,6 +40,7 @@ namespace DesktopQRTools
 
             try
             {
+                _qrCodeContent = content;
                 _generatedQRCode = GenerateQRCode(content);
                 QRCodeImage.Source = _generatedQRCode;
                 SaveButton.IsEnabled = true;
@@ -64,7 +67,7 @@ namespace DesktopQRTools
 
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = "PNG Image|*.png",
+                Filter = (ImageFormatComboBox.SelectedIndex == 0) ? "PNG Image|*.png" : "SVG Image|*.svg",
                 Title = "Save QR Code Image"
             };
 
@@ -72,7 +75,14 @@ namespace DesktopQRTools
             {
                 try
                 {
-                    SaveQRCodeImage(_generatedQRCode, saveFileDialog.FileName);
+                    if (ImageFormatComboBox.SelectedIndex == 0)
+                    {
+                        SaveQRCodeImage(_generatedQRCode, saveFileDialog.FileName);
+                    }
+                    else
+                    {
+                        SaveQRCodeAsSvg(_qrCodeContent, saveFileDialog.FileName);
+                    }
                     MessageBox.Show("QR code image saved successfully.", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
@@ -143,6 +153,28 @@ namespace DesktopQRTools
 
             bitmap.UnlockBits(bitmapData);
             return bitmapSource;
+        }
+
+        /// <summary>
+        /// Saves the QR code as an SVG file.
+        /// </summary>
+        /// <param name="content">The content of the QR code.</param>
+        /// <param name="filePath">The file path to save the SVG.</param>
+        private void SaveQRCodeAsSvg(string content, string filePath)
+        {
+            var qrCodeWriter = new ZXing.BarcodeWriterSvg
+            {
+                Format = ZXing.BarcodeFormat.QR_CODE,
+                Options = new QrCodeEncodingOptions
+                {
+                    Height = 300,
+                    Width = 300,
+                    Margin = 1
+                }
+            };
+
+            var svgImage = qrCodeWriter.Write(content);
+            File.WriteAllText(filePath, svgImage.Content);
         }
     }
 }
