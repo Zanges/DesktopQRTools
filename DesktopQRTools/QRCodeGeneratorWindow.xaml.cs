@@ -110,9 +110,9 @@ namespace DesktopQRTools
             {
                 fileName = autoSaveQRCodeName;
                 if (appendDate)
-                    fileName += $"_{DateTime.Now:yyyyMMdd}";
+                    fileName += $"-{DateTime.Now:yyyyMMdd}";
                 if (appendTime)
-                    fileName += $"_{DateTime.Now:HHmmss}";
+                    fileName += $"-{DateTime.Now:HHmmss}";
                 
                 string extension = ImageFormatComboBox.SelectedIndex == 0 ? "png" : "svg";
                 fileName += $".{extension}";
