@@ -7,6 +7,7 @@ using ZXing.Windows.Compatibility;
 using System.IO;
 using Microsoft.Win32;
 using System.Windows.Media;
+using System.Configuration;
 
 namespace DesktopQRTools
 {
@@ -65,37 +66,83 @@ namespace DesktopQRTools
                 return;
             }
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog
-            {
-                Filter = (ImageFormatComboBox.SelectedIndex == 0) ? "PNG Image|*.png" : "SVG Image|*.svg",
-                Title = "Save QR Code Image"
-            };
+            string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
+            string defaultFileName = "QRCode";
+            string autoSaveDirectory = "";
+            bool skipSaveDialog = false;
 
-            if (saveFileDialog.ShowDialog() == true)
+            if (File.Exists(configFilePath))
             {
-                try
+                string[] lines = File.ReadAllLines(configFilePath);
+                foreach (string line in lines)
                 {
-                    if (ImageFormatComboBox.SelectedIndex == 0)
+                    string[] parts = line.Split('=');
+                    if (parts.Length == 2)
                     {
-                        SaveQRCodeImage(_generatedQRCode, saveFileDialog.FileName);
+                        switch (parts[0])
+                        {
+                            case "DefaultQRCodeName":
+                                defaultFileName = parts[1];
+                                break;
+                            case "SkipSaveDialog":
+                                bool.TryParse(parts[1], out skipSaveDialog);
+                                break;
+                            case "AutoSaveDirectory":
+                                autoSaveDirectory = parts[1];
+                                break;
+                        }
+                    }
+                }
+            }
+
+            string fileName;
+            string filePath;
+
+            if (skipSaveDialog && !string.IsNullOrEmpty(autoSaveDirectory))
+            {
+                fileName = $"{defaultFileName}_{DateTime.Now:yyyyMMddHHmmss}.{(ImageFormatComboBox.SelectedIndex == 0 ? "png" : "svg")}";
+                filePath = Path.Combine(autoSaveDirectory, fileName);
+            }
+            else
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    FileName = defaultFileName,
+                    Filter = (ImageFormatComboBox.SelectedIndex == 0) ? "PNG Image|*.png" : "SVG Image|*.svg",
+                    Title = "Save QR Code Image"
+                };
+
+                if (saveFileDialog.ShowDialog() != true)
+                {
+                    return;
+                }
+
+                filePath = saveFileDialog.FileName;
+            }
+
+            try
+            {
+                if (ImageFormatComboBox.SelectedIndex == 0)
+                {
+                    SaveQRCodeImage(_generatedQRCode, filePath);
+                }
+                else
+                {
+                    if (_qrCodeContent != null)
+                    {
+                        SaveQRCodeAsSvg(_qrCodeContent, filePath);
                     }
                     else
                     {
-                        if (_qrCodeContent != null)
-                        {
-                            SaveQRCodeAsSvg(_qrCodeContent, saveFileDialog.FileName);
-                            MessageBox.Show("QR code image saved successfully.", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                        else
-                        {
-                            MessageBox.Show("No QR code content available to save.", "Save Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        }
+                        MessageBox.Show("No QR code content available to save.", "Save Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
                     }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"An error occurred while saving the QR code image: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                MessageBox.Show("QR code image saved successfully.", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while saving the QR code image: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

@@ -37,7 +37,9 @@ namespace DesktopQRTools
                 using (StreamWriter writer = new StreamWriter(configFilePath))
                 {
                     writer.WriteLine($"ExampleOption={ExampleOptionCheckBox.IsChecked}");
-                    // Add more options here as needed
+                    writer.WriteLine($"DefaultQRCodeName={DefaultQRCodeNameTextBox.Text}");
+                    writer.WriteLine($"SkipSaveDialog={SkipSaveDialogCheckBox.IsChecked}");
+                    writer.WriteLine($"AutoSaveDirectory={AutoSaveDirectoryTextBox.Text}");
                 }
 
                 return true;
@@ -64,11 +66,23 @@ namespace DesktopQRTools
                         string[] parts = line.Split('=');
                         if (parts.Length == 2)
                         {
-                            if (parts[0] == "ExampleOption" && bool.TryParse(parts[1], out bool isChecked))
+                            switch (parts[0])
                             {
-                                ExampleOptionCheckBox.IsChecked = isChecked;
+                                case "ExampleOption":
+                                    if (bool.TryParse(parts[1], out bool isChecked))
+                                        ExampleOptionCheckBox.IsChecked = isChecked;
+                                    break;
+                                case "DefaultQRCodeName":
+                                    DefaultQRCodeNameTextBox.Text = parts[1];
+                                    break;
+                                case "SkipSaveDialog":
+                                    if (bool.TryParse(parts[1], out bool skipDialog))
+                                        SkipSaveDialogCheckBox.IsChecked = skipDialog;
+                                    break;
+                                case "AutoSaveDirectory":
+                                    AutoSaveDirectoryTextBox.Text = parts[1];
+                                    break;
                             }
-                            // Add more options here as needed
                         }
                     }
                 }
