@@ -28,6 +28,7 @@ namespace DesktopQRTools
             this.MouseLeftButtonDown += QRCodeScannerWindow_MouseLeftButtonDown;
             this.MouseLeftButtonUp += QRCodeScannerWindow_MouseLeftButtonUp;
             this.MouseMove += QRCodeScannerWindow_MouseMove;
+            this.KeyDown += QRCodeScannerWindow_KeyDown;
 
             // Make the window transparent but not click-through
             this.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
@@ -35,6 +36,14 @@ namespace DesktopQRTools
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
             this.WindowState = WindowState.Maximized;
+        }
+
+        private void QRCodeScannerWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                this.Close();
+            }
         }
 
         private void QRCodeScannerWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -152,12 +161,6 @@ namespace DesktopQRTools
         {
             QRCodeResultWindow resultWindow = new QRCodeResultWindow(content);
             resultWindow.Show();
-
-            if (content.Length <= 50)
-            {
-                MessageBox.Show($"Scanned content: {content}", "QR Code Content", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-
             this.Close();
         }
 
