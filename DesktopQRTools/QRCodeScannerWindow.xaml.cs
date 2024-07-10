@@ -173,7 +173,7 @@ namespace DesktopQRTools
                 WriteableBitmap bitmapToScan;
                 if (scannerMode == OptionsWindow.ScannerMode.AutomaticDetection)
                 {
-                    bitmapToScan = screenBmp;
+                    bitmapToScan = new WriteableBitmap(screenBmp);
                 }
                 else
                 {
