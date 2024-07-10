@@ -7,15 +7,14 @@ using ZXing;
 using ZXing.QrCode;
 using ZXing.Common;
 using ZXing.Windows.Compatibility;
-using ZXing;
 
 namespace DesktopQRToolsTests
 {
     [TestFixture, Apartment(ApartmentState.STA)]
     public class QRCodeTests
     {
-        private QRCodeGeneratorWindow _generatorWindow;
-        private QRCodeScannerWindow _scannerWindow;
+        private QRCodeGeneratorWindow? _generatorWindow;
+        private QRCodeScannerWindow? _scannerWindow;
 
         [SetUp]
         public void Setup()
@@ -62,7 +61,7 @@ namespace DesktopQRToolsTests
             var binarizer = new HybridBinarizer(luminanceSource);
             var binaryBitmap = new BinaryBitmap(binarizer);
 
-            Result result = reader.Decode(binaryBitmap);
+            Result result = reader.Decode(luminanceSource);
 
             Assert.That(result, Is.Not.Null, "Decoded result should not be null");
             Assert.That(result.Text, Is.EqualTo(testContent), "Decoded content should match the original content");
