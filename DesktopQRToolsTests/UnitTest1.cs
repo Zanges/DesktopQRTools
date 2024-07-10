@@ -6,6 +6,7 @@ using ZXing;
 using ZXing.QrCode;
 using ZXing.Common;
 using ZXing.Windows.Compatibility;
+using ZXing.Windows.Compatibility.Rendering;
 
 namespace DesktopQRToolsTests
 {
