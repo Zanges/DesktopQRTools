@@ -22,7 +22,7 @@ namespace DesktopQRTools
 
         private void UpdateControlsState()
         {
-            bool isEnabled = !SkipSaveDialogCheckBox.IsChecked ?? true;
+            bool isEnabled = SkipSaveDialogCheckBox.IsChecked ?? false;
             AutoSaveQRCodeNameTextBox.IsEnabled = isEnabled;
             AutoSaveDirectoryTextBox.IsEnabled = isEnabled;
             AppendDateCheckBox.IsEnabled = isEnabled;
