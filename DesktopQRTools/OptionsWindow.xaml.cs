@@ -12,6 +12,21 @@ namespace DesktopQRTools
         {
             InitializeComponent();
             LoadOptions();
+            UpdateControlsState();
+        }
+
+        private void SkipSaveDialogCheckBox_CheckedChanged(object sender, RoutedEventArgs e)
+        {
+            UpdateControlsState();
+        }
+
+        private void UpdateControlsState()
+        {
+            bool isEnabled = !SkipSaveDialogCheckBox.IsChecked ?? true;
+            AutoSaveQRCodeNameTextBox.IsEnabled = isEnabled;
+            AutoSaveDirectoryTextBox.IsEnabled = isEnabled;
+            AppendDateCheckBox.IsEnabled = isEnabled;
+            AppendTimeCheckBox.IsEnabled = isEnabled;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -96,6 +111,7 @@ namespace DesktopQRTools
             {
                 Console.WriteLine($"Error loading options: {ex.Message}");
             }
+            UpdateControlsState();
         }
     }
 }
