@@ -70,6 +70,8 @@ namespace DesktopQRTools
             string autoSaveQRCodeName = "QRCode";
             string autoSaveDirectory = "";
             bool skipSaveDialog = false;
+            bool appendDate = false;
+            bool appendTime = false;
 
             if (File.Exists(configFilePath))
             {
@@ -90,6 +92,12 @@ namespace DesktopQRTools
                             case "AutoSaveDirectory":
                                 autoSaveDirectory = parts[1];
                                 break;
+                            case "AppendDate":
+                                bool.TryParse(parts[1], out appendDate);
+                                break;
+                            case "AppendTime":
+                                bool.TryParse(parts[1], out appendTime);
+                                break;
                         }
                     }
                 }
@@ -100,8 +108,26 @@ namespace DesktopQRTools
 
             if (skipSaveDialog && !string.IsNullOrEmpty(autoSaveDirectory))
             {
-                fileName = $"{autoSaveQRCodeName}_{DateTime.Now:yyyyMMddHHmmss}.{(ImageFormatComboBox.SelectedIndex == 0 ? "png" : "svg")}";
+                fileName = autoSaveQRCodeName;
+                if (appendDate)
+                    fileName += $"_{DateTime.Now:yyyyMMdd}";
+                if (appendTime)
+                    fileName += $"_{DateTime.Now:HHmmss}";
+                
+                string extension = ImageFormatComboBox.SelectedIndex == 0 ? "png" : "svg";
+                fileName += $".{extension}";
+
                 filePath = Path.Combine(autoSaveDirectory, fileName);
+
+                // If file already exists, append a number
+                int counter = 1;
+                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+                while (File.Exists(filePath))
+                {
+                    fileName = $"{fileNameWithoutExtension}_{counter}.{extension}";
+                    filePath = Path.Combine(autoSaveDirectory, fileName);
+                    counter++;
+                }
             }
             else
             {
