@@ -24,8 +24,8 @@ namespace DesktopQRTools
             this.MouseLeftButtonUp += QRCodeScannerWindow_MouseLeftButtonUp;
             this.MouseMove += QRCodeScannerWindow_MouseMove;
 
-            // Make the window transparent and click-through
-            this.Background = Brushes.Transparent;
+            // Make the window transparent but not click-through
+            this.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
             this.AllowsTransparency = true;
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
@@ -41,7 +41,8 @@ namespace DesktopQRTools
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0, 50, 0, 0)
             };
-            this.Content = instructions;
+            Grid.SetZIndex(instructions, 1);
+            ((Grid)this.Content).Children.Add(instructions);
         }
 
         private void QRCodeScannerWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -80,8 +81,15 @@ namespace DesktopQRTools
             int width = (int)Math.Abs(endPoint.X - startPoint.X);
             int height = (int)Math.Abs(endPoint.Y - startPoint.Y);
 
-            // Capture the entire screen
+            // Hide this window before capturing the screen
+            this.Visibility = Visibility.Hidden;
+            System.Threading.Thread.Sleep(100); // Give time for the window to hide
+
+            // Capture the screen
             var screenBmp = CaptureScreen();
+
+            // Show the window again
+            this.Visibility = Visibility.Visible;
 
             // Crop the captured screen to the selected area
             var croppedBmp = new CroppedBitmap(screenBmp, new Int32Rect(x, y, width, height));
