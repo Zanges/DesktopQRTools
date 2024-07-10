@@ -3,6 +3,7 @@ using System.Windows.Media.Imaging;
 using DesktopQRTools;
 using ZXing;
 using ZXing.QrCode;
+using ZXing.Common;
 
 namespace DesktopQRToolsTests
 {
@@ -27,12 +28,12 @@ namespace DesktopQRToolsTests
             WriteableBitmap qrCode = _generatorWindow.GenerateQRCode(testContent);
 
             // Assert
-            Assert.IsNotNull(qrCode, "QR code should not be null");
-            Assert.AreEqual(300, qrCode.PixelWidth, "QR code width should be 300 pixels");
-            Assert.AreEqual(300, qrCode.PixelHeight, "QR code height should be 300 pixels");
+            Assert.That(qrCode, Is.Not.Null, "QR code should not be null");
+            Assert.That(qrCode.PixelWidth, Is.EqualTo(300), "QR code width should be 300 pixels");
+            Assert.That(qrCode.PixelHeight, Is.EqualTo(300), "QR code height should be 300 pixels");
 
             // Decode the generated QR code
-            BarcodeReader reader = new BarcodeReader
+            BarcodeReader<WriteableBitmap> reader = new BarcodeReader<WriteableBitmap>
             {
                 Options = new DecodingOptions
                 {
@@ -41,8 +42,8 @@ namespace DesktopQRToolsTests
             };
             Result result = reader.Decode(qrCode);
 
-            Assert.IsNotNull(result, "Decoded result should not be null");
-            Assert.AreEqual(testContent, result.Text, "Decoded content should match the original content");
+            Assert.That(result, Is.Not.Null, "Decoded result should not be null");
+            Assert.That(result.Text, Is.EqualTo(testContent), "Decoded content should match the original content");
         }
 
         [Test]
@@ -53,15 +54,15 @@ namespace DesktopQRToolsTests
             WriteableBitmap qrCode = _generatorWindow.GenerateQRCode(testContent);
 
             // Act
-            string scannedContent = ScanQRCode(qrCode);
+            string? scannedContent = ScanQRCode(qrCode);
 
             // Assert
-            Assert.AreEqual(testContent, scannedContent, "Scanned content should match the original content");
+            Assert.That(scannedContent, Is.EqualTo(testContent), "Scanned content should match the original content");
         }
 
-        private string ScanQRCode(WriteableBitmap qrCode)
+        private string? ScanQRCode(WriteableBitmap qrCode)
         {
-            BarcodeReader reader = new BarcodeReader
+            BarcodeReader<WriteableBitmap> reader = new BarcodeReader<WriteableBitmap>
             {
                 Options = new DecodingOptions
                 {
