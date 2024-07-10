@@ -42,17 +42,19 @@ namespace DesktopQRToolsTests
             Assert.That(qrCode.PixelHeight, Is.EqualTo(300), "QR code height should be 300 pixels");
 
             // Decode the generated QR code
-            BarcodeReader<WriteableBitmap> reader = new BarcodeReader<WriteableBitmap>(
-                null,
-                (bitmap) => new WriteableBitmapLuminanceSource(bitmap),
-                null)
+            var reader = new BarcodeReaderGeneric
             {
                 Options = new DecodingOptions
                 {
                     PossibleFormats = new[] { BarcodeFormat.QR_CODE }
                 }
             };
-            Result result = reader.Decode(qrCode);
+
+            var luminanceSource = new WriteableBitmapLuminanceSource(qrCode);
+            var binarizer = new HybridBinarizer(luminanceSource);
+            var binaryBitmap = new BinaryBitmap(binarizer);
+
+            Result result = reader.Decode(binaryBitmap);
 
             Assert.That(result, Is.Not.Null, "Decoded result should not be null");
             Assert.That(result.Text, Is.EqualTo(testContent), "Decoded content should match the original content");
