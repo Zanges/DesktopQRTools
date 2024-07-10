@@ -32,8 +32,8 @@ namespace DesktopQRTools
         /// <param name="e">The event data.</param>
         private void ScanQRCodeButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Implement QR code scanning functionality
-            MessageBox.Show("QR Code scanning functionality will be implemented soon.", "Not Implemented", MessageBoxButton.OK, MessageBoxImage.Information);
+            QRCodeScannerWindow scannerWindow = new QRCodeScannerWindow();
+            scannerWindow.Show();
         }
     }
 }
