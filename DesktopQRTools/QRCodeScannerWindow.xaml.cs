@@ -74,9 +74,6 @@ namespace DesktopQRTools
         {
             SelectionRectangle.Visibility = Visibility.Collapsed;
             InstructionsTextBlock.Visibility = Visibility.Visible;
-            ResultPanel.Visibility = Visibility.Collapsed;
-            OpenLinkButton.Visibility = Visibility.Collapsed;
-            SaveContentButton.Visibility = Visibility.Collapsed;
         }
 
         private void CaptureAndScanQRCode(System.Windows.Point startPoint, System.Windows.Point endPoint)

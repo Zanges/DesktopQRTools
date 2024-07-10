@@ -13,8 +13,8 @@ namespace DesktopQRTools
             InitializeComponent();
             ContentTextBlock.Text = content;
 
-            if (Uri.TryCreate(content, UriKind.Absolute, out Uri uriResult) &&
-                (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+            if (Uri.TryCreate(content, UriKind.Absolute, out Uri? uriResult) &&
+                (uriResult?.Scheme == Uri.UriSchemeHttp || uriResult?.Scheme == Uri.UriSchemeHttps))
             {
                 OpenLinkButton.Visibility = Visibility.Visible;
             }
@@ -22,7 +22,7 @@ namespace DesktopQRTools
 
         private void OpenLinkButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Uri.TryCreate(ContentTextBlock.Text, UriKind.Absolute, out Uri uri))
+            if (Uri.TryCreate(ContentTextBlock.Text, UriKind.Absolute, out Uri? uri) && uri != null)
             {
                 Process.Start(new ProcessStartInfo(uri.AbsoluteUri) { UseShellExecute = true });
             }
