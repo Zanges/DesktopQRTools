@@ -5,6 +5,7 @@ using DesktopQRTools;
 using ZXing;
 using ZXing.QrCode;
 using ZXing.Common;
+using ZXing.Windows.Compatibility;
 
 namespace DesktopQRToolsTests
 {
@@ -39,7 +40,10 @@ namespace DesktopQRToolsTests
             Assert.That(qrCode.PixelHeight, Is.EqualTo(300), "QR code height should be 300 pixels");
 
             // Decode the generated QR code
-            BarcodeReader<WriteableBitmap> reader = new BarcodeReader<WriteableBitmap>(null, null, null)
+            BarcodeReader<WriteableBitmap> reader = new BarcodeReader<WriteableBitmap>(
+                null,
+                (bitmap) => new WriteableBitmapLuminanceSource(bitmap),
+                null)
             {
                 Options = new DecodingOptions
                 {
