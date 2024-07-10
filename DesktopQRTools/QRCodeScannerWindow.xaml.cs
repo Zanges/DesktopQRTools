@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
+using System.Windows.Shapes;
 using ZXing;
 using ZXing.QrCode;
 using ZXing.Windows.Compatibility;
@@ -289,7 +290,7 @@ namespace DesktopQRTools
                     screenBmp.GetHbitmap(),
                     IntPtr.Zero,
                     Int32Rect.Empty,
-                    BitmapSizeOptions.FromEmptyOptions());
+                    BitmapSizeOptions.FromEmptyOptions()) ?? default;
             }
         }
     }
