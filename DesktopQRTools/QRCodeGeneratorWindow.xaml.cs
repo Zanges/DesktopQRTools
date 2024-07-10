@@ -28,10 +28,10 @@ namespace DesktopQRTools
 
         public virtual IFileSystem FileSystem { get; protected set; } = new FileSystem();
 
-        public QRCodeGeneratorWindow(string? configPath = null)
+        public QRCodeGeneratorWindow(string configPath = "")
         {
             InitializeComponent();
-            LoadConfiguration(configPath ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini"));
+            LoadConfiguration(string.IsNullOrEmpty(configPath) ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini") : configPath);
         }
 
         // Constructor for testing with mock file system
@@ -291,30 +291,6 @@ namespace DesktopQRTools
             File.WriteAllText(filePath, svgImage.Content);
         }
 
-        private string GetAutoSaveFileName()
-        {
-            string fileName = _autoSaveQRCodeName;
-            if (_appendDate)
-                fileName += $"-{DateTime.Now:yyyyMMdd}";
-            if (_appendTime)
-                fileName += $"-{DateTime.Now:HHmmss}";
-            
-            string extension = ImageFormatComboBox.SelectedIndex == 0 ? "png" : "svg";
-            fileName += $".{extension}";
-
-            // If file already exists, append a number
-            int counter = 1;
-            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-            string filePath = Path.Combine(_autoSaveDirectory, fileName);
-            while (File.Exists(filePath))
-            {
-                fileName = $"{fileNameWithoutExtension}_{counter}.{extension}";
-                filePath = Path.Combine(_autoSaveDirectory, fileName);
-                counter++;
-            }
-
-            return fileName;
-        }
 
         // Methods to support testing
         public string GetAutoSaveQRCodeName() => _autoSaveQRCodeName;
