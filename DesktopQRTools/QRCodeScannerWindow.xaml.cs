@@ -68,7 +68,15 @@ namespace DesktopQRTools
         {
             System.Windows.Point endPoint = e.GetPosition(null);
             CaptureAndScanQRCode(startPoint, endPoint);
-            this.Close();
+        }
+
+        private void ResetUI()
+        {
+            SelectionRectangle.Visibility = Visibility.Collapsed;
+            InstructionsTextBlock.Visibility = Visibility.Visible;
+            ResultPanel.Visibility = Visibility.Collapsed;
+            OpenLinkButton.Visibility = Visibility.Collapsed;
+            SaveContentButton.Visibility = Visibility.Collapsed;
         }
 
         private void CaptureAndScanQRCode(System.Windows.Point startPoint, System.Windows.Point endPoint)
@@ -147,16 +155,27 @@ namespace DesktopQRTools
         {
             ResultTextBlock.Text = content;
             ResultPanel.Visibility = Visibility.Visible;
+            InstructionsTextBlock.Visibility = Visibility.Collapsed;
+            SelectionRectangle.Visibility = Visibility.Collapsed;
 
             if (Uri.TryCreate(content, UriKind.Absolute, out Uri uriResult) && 
                 (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
             {
                 OpenLinkButton.Visibility = Visibility.Visible;
+                SaveContentButton.Visibility = Visibility.Collapsed;
             }
             else
             {
+                OpenLinkButton.Visibility = Visibility.Collapsed;
                 SaveContentButton.Visibility = Visibility.Visible;
             }
+
+            ScanAgainButton.Visibility = Visibility.Visible;
+        }
+
+        private void ScanAgainButton_Click(object sender, RoutedEventArgs e)
+        {
+            ResetUI();
         }
 
         private void OpenLinkButton_Click(object sender, RoutedEventArgs e)
