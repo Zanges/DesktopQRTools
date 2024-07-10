@@ -9,6 +9,13 @@ namespace DesktopQRTools
     {
         private const string ConfigFileName = "config.ini";
 
+        public enum ScannerMode
+        {
+            DrawBox,
+            TargetingRectangle,
+            AutomaticDetection
+        }
+
         public OptionsWindow()
         {
             InitializeComponent();
@@ -71,6 +78,7 @@ namespace DesktopQRTools
                     writer.WriteLine($"AutoSaveDirectory={AutoSaveDirectoryTextBox.Text}");
                     writer.WriteLine($"AppendDate={AppendDateCheckBox.IsChecked}");
                     writer.WriteLine($"AppendTime={AppendTimeCheckBox.IsChecked}");
+                    writer.WriteLine($"ScannerMode={ScannerModeComboBox.SelectedIndex}");
                 }
 
                 return true;
@@ -117,6 +125,10 @@ namespace DesktopQRTools
                                     if (bool.TryParse(parts[1], out bool appendTime))
                                         AppendTimeCheckBox.IsChecked = appendTime;
                                     break;
+                                case "ScannerMode":
+                                    if (int.TryParse(parts[1], out int scannerMode))
+                                        ScannerModeComboBox.SelectedIndex = scannerMode;
+                                    break;
                             }
                         }
                     }
@@ -127,6 +139,11 @@ namespace DesktopQRTools
                 Console.WriteLine($"Error loading options: {ex.Message}");
             }
             UpdateControlsState();
+        }
+
+        public ScannerMode GetScannerMode()
+        {
+            return (ScannerMode)ScannerModeComboBox.SelectedIndex;
         }
     }
 }
