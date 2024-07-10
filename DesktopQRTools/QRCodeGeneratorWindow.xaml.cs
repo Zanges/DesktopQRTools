@@ -5,6 +5,7 @@ using ZXing;
 using ZXing.QrCode;
 using ZXing.Windows.Compatibility;
 using System.IO;
+using Microsoft.Win32;
 
 namespace DesktopQRTools
 {
@@ -13,6 +14,8 @@ namespace DesktopQRTools
     /// </summary>
     public partial class QRCodeGeneratorWindow : Window
     {
+        private WriteableBitmap _generatedQRCode;
+
         public QRCodeGeneratorWindow()
         {
             InitializeComponent();
@@ -35,8 +38,9 @@ namespace DesktopQRTools
 
             try
             {
-                var qrCodeBitmap = GenerateQRCode(content);
-                QRCodeImage.Source = qrCodeBitmap;
+                _generatedQRCode = GenerateQRCode(content);
+                QRCodeImage.Source = _generatedQRCode;
+                SaveButton.IsEnabled = true;
             }
             catch (Exception ex)
             {
@@ -45,11 +49,45 @@ namespace DesktopQRTools
         }
 
         /// <summary>
+        /// Event handler for the Save QR Code button click.
+        /// Saves the generated QR code as an image file.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_generatedQRCode == null)
+            {
+                MessageBox.Show("Please generate a QR code first.", "No QR Code", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "PNG Image|*.png",
+                Title = "Save QR Code Image"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    SaveQRCodeImage(_generatedQRCode, saveFileDialog.FileName);
+                    MessageBox.Show("QR code image saved successfully.", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred while saving the QR code image: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        /// <summary>
         /// Generates a QR code from the given text.
         /// </summary>
         /// <param name="text">The text to encode in the QR code.</param>
         /// <returns>A bitmap image of the generated QR code.</returns>
-        private BitmapSource GenerateQRCode(string text)
+        private WriteableBitmap GenerateQRCode(string text)
         {
             var writer = new BarcodeWriterPixelData
             {
@@ -69,6 +107,21 @@ namespace DesktopQRTools
             bitmap.WritePixels(new Int32Rect(0, 0, pixelData.Width, pixelData.Height), pixelData.Pixels, pixelData.Width * 4, 0);
 
             return bitmap;
+        }
+
+        /// <summary>
+        /// Saves the generated QR code as a PNG image.
+        /// </summary>
+        /// <param name="bitmap">The WriteableBitmap containing the QR code.</param>
+        /// <param name="filePath">The file path to save the image.</param>
+        private void SaveQRCodeImage(WriteableBitmap bitmap, string filePath)
+        {
+            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+            {
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                encoder.Save(stream);
+            }
         }
 
         /// <summary>
