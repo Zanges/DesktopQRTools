@@ -9,6 +9,7 @@ using System.IO.Abstractions;
 using Microsoft.Win32;
 using System.Windows.Media;
 using System.Configuration;
+using System.IO.Abstractions.TestingHelpers;
 
 namespace DesktopQRTools
 {
