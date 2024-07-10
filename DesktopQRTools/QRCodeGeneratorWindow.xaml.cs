@@ -229,6 +229,17 @@ namespace DesktopQRTools
             }
         }
 
+        // Public method for testing
+        public void SaveQRCode()
+        {
+            if (_generatedQRCode != null)
+            {
+                string fileName = GetAutoSaveFileName();
+                string filePath = Path.Combine(_autoSaveDirectory, fileName);
+                SaveQRCodeImage(_generatedQRCode, filePath);
+            }
+        }
+
         /// <summary>
         /// Converts a System.Drawing.Bitmap to a BitmapSource for WPF display.
         /// </summary>

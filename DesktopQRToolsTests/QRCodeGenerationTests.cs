@@ -114,7 +114,9 @@ namespace DesktopQRToolsTests
             Assert.That(qrCodeGeneratorWindow.GetAppendTime(), Is.True, "Append time should be true");
 
             // Check if the file was "saved" in the mock file system
-            Assert.That(mockFileSystem.FileExists(expectedFilePath), Is.True, "QR code file should be saved");
+            var savedFiles = mockFileSystem.AllFiles.Where(f => f.StartsWith(Path.Combine("TestDir", "TestQRCode"))).ToList();
+            Assert.That(savedFiles, Is.Not.Empty, "QR code file should be saved");
+            Assert.That(savedFiles[0], Does.Match(@"TestDir\\TestQRCode-\d{8}-\d{6}\.png"), "Saved file should match expected format");
         }
     }
 }
