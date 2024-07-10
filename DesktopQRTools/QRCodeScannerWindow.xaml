@@ -26,5 +26,23 @@
                    HorizontalAlignment="Center"
                    VerticalAlignment="Top"
                    Margin="0,50,0,0"/>
+        <StackPanel x:Name="ResultPanel" 
+                    Visibility="Collapsed" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center">
+            <TextBlock x:Name="ResultTextBlock" 
+                       TextWrapping="Wrap" 
+                       MaxWidth="600"/>
+            <Button x:Name="OpenLinkButton" 
+                    Content="Open Link" 
+                    Click="OpenLinkButton_Click" 
+                    Margin="0,10,0,0" 
+                    Visibility="Collapsed"/>
+            <Button x:Name="SaveContentButton" 
+                    Content="Save Content" 
+                    Click="SaveContentButton_Click" 
+                    Margin="0,10,0,0" 
+                    Visibility="Collapsed"/>
+        </StackPanel>
     </Grid>
 </Window>
