@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ZXing;
 using ZXing.Windows.Compatibility;
@@ -21,6 +22,25 @@ namespace DesktopQRTools
             this.MouseLeftButtonDown += QRCodeScannerWindow_MouseLeftButtonDown;
             this.MouseLeftButtonUp += QRCodeScannerWindow_MouseLeftButtonUp;
             this.MouseMove += QRCodeScannerWindow_MouseMove;
+
+            // Make the window transparent and click-through
+            this.Background = Brushes.Transparent;
+            this.AllowsTransparency = true;
+            this.WindowStyle = WindowStyle.None;
+            this.Topmost = true;
+            this.WindowState = WindowState.Maximized;
+
+            // Add instructions for the user
+            TextBlock instructions = new TextBlock
+            {
+                Text = "Click and drag to select the area containing the QR code",
+                FontSize = 24,
+                Foreground = Brushes.White,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(0, 50, 0, 0)
+            };
+            this.Content = instructions;
         }
 
         private void QRCodeScannerWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
