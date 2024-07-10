@@ -21,6 +21,18 @@ namespace DesktopQRTools
             UpdateControlsState();
         }
 
+        private void BrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                DialogResult result = dialog.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
+                {
+                    AutoSaveDirectoryTextBox.Text = dialog.SelectedPath;
+                }
+            }
+        }
+
         private void UpdateControlsState()
         {
             bool isEnabled = SkipSaveDialogCheckBox.IsChecked ?? false;
