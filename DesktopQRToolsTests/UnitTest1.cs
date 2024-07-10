@@ -86,5 +86,31 @@ namespace DesktopQRToolsTests
             // Assert
             Assert.That(scannedContent, Is.EqualTo(testContent), "Scanned content should match the original content");
         }
+
+        [Test]
+        public void TestURLRecognitionAndOpenButton()
+        {
+            // Arrange
+            string testUrl = "https://example.com";
+            WriteableBitmap qrCode = _generatorWindow.GenerateQRCode(testUrl);
+
+            // Act
+            string? scannedContent = null;
+            bool isOpenLinkButtonVisible = false;
+            _scannerWindow.Dispatcher.Invoke(() =>
+            {
+                var startPoint = new Point(0, 0);
+                var endPoint = new Point(qrCode.PixelWidth, qrCode.PixelHeight);
+                scannedContent = _scannerWindow.CaptureAndScanQRCode(startPoint, endPoint, qrCode);
+
+                // Create and show the QRCodeResultWindow
+                var resultWindow = new QRCodeResultWindow(scannedContent);
+                isOpenLinkButtonVisible = resultWindow.OpenLinkButton.Visibility == Visibility.Visible;
+            });
+
+            // Assert
+            Assert.That(scannedContent, Is.EqualTo(testUrl), "Scanned content should match the original URL");
+            Assert.That(isOpenLinkButtonVisible, Is.True, "Open Link button should be visible for a URL");
+        }
     }
 }
