@@ -12,6 +12,9 @@ namespace DesktopQRTools
         {
             InitializeComponent();
             ContentTextBlock.Text = content;
+        }
+
+        public TextBlock ContentTextBlock { get; private set; }
 
             if (Uri.TryCreate(content, UriKind.Absolute, out Uri? uriResult) &&
                 (uriResult?.Scheme == Uri.UriSchemeHttp || uriResult?.Scheme == Uri.UriSchemeHttps))
