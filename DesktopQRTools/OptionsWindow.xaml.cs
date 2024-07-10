@@ -39,6 +39,7 @@ namespace DesktopQRTools
             bool isEnabled = SkipSaveDialogCheckBox.IsChecked ?? false;
             AutoSaveQRCodeNameTextBox.IsEnabled = isEnabled;
             AutoSaveDirectoryTextBox.IsEnabled = isEnabled;
+            AutoSaveDirectoryBrowseButton.IsEnabled = isEnabled;
             AppendDateCheckBox.IsEnabled = isEnabled;
             AppendTimeCheckBox.IsEnabled = isEnabled;
         }

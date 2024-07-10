@@ -21,7 +21,14 @@
                 <TextBlock Text="Auto-save QR Code Image Name:" Margin="0,0,0,5"/>
                 <TextBox x:Name="AutoSaveQRCodeNameTextBox" Margin="0,0,0,10"/>
                 <TextBlock Text="Auto-save Directory:" Margin="0,0,0,5"/>
-                <TextBox x:Name="AutoSaveDirectoryTextBox" Margin="0,0,0,10"/>
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="AutoSaveDirectoryTextBox" Grid.Column="0"/>
+                    <Button x:Name="AutoSaveDirectoryBrowseButton" Content="Browse" Grid.Column="1" Margin="5,0,0,0" Click="BrowseButton_Click"/>
+                </Grid>
                 <CheckBox x:Name="AppendDateCheckBox" Content="Append Date to Auto-save  Filename" Margin="0,0,0,5"/>
                 <CheckBox x:Name="AppendTimeCheckBox" Content="Append Time to Auto-save  Filename" Margin="0,0,0,10"/>
             </StackPanel>
