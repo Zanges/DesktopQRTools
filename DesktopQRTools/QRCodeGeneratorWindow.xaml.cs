@@ -104,7 +104,7 @@ namespace DesktopQRTools
         /// </summary>
         /// <param name="text">The text to encode in the QR code.</param>
         /// <returns>A bitmap image of the generated QR code.</returns>
-        private WriteableBitmap GenerateQRCode(string text)
+        public WriteableBitmap GenerateQRCode(string text)
         {
             var writer = new BarcodeWriterPixelData
             {
