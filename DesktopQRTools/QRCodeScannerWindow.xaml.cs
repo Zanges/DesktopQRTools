@@ -47,21 +47,26 @@ namespace DesktopQRTools
 
         private void QRCodeScannerWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            startPoint = e.GetPosition(this);
+            startPoint = e.GetPosition(null);
             SelectionRectangle.Visibility = Visibility.Visible;
+            Canvas.SetLeft(SelectionRectangle, startPoint.X);
+            Canvas.SetTop(SelectionRectangle, startPoint.Y);
+            SelectionRectangle.Width = 0;
+            SelectionRectangle.Height = 0;
         }
 
         private void QRCodeScannerWindow_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                System.Windows.Point currentPoint = e.GetPosition(this);
+                System.Windows.Point currentPoint = e.GetPosition(null);
                 double x = Math.Min(startPoint.X, currentPoint.X);
                 double y = Math.Min(startPoint.Y, currentPoint.Y);
                 double width = Math.Abs(currentPoint.X - startPoint.X);
                 double height = Math.Abs(currentPoint.Y - startPoint.Y);
 
-                SelectionRectangle.Margin = new Thickness(x, y, 0, 0);
+                Canvas.SetLeft(SelectionRectangle, x);
+                Canvas.SetTop(SelectionRectangle, y);
                 SelectionRectangle.Width = width;
                 SelectionRectangle.Height = height;
             }
@@ -69,7 +74,7 @@ namespace DesktopQRTools
 
         private void QRCodeScannerWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            System.Windows.Point endPoint = e.GetPosition(this);
+            System.Windows.Point endPoint = e.GetPosition(null);
             CaptureAndScanQRCode(startPoint, endPoint);
             this.Close();
         }

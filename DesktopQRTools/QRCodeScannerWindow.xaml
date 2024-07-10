@@ -11,11 +11,11 @@
         AllowsTransparency="True"
         Background="Transparent"
         Topmost="True">
-    <Grid>
+    <Canvas>
         <Rectangle x:Name="SelectionRectangle" 
                    Stroke="Red" 
                    StrokeThickness="2" 
                    Fill="#3000FF00"
                    Visibility="Collapsed"/>
-    </Grid>
+    </Canvas>
 </Window>
