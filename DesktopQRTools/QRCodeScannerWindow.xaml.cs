@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using ZXing;
 using ZXing.Windows.Compatibility;
+using System.Windows.Interop;
 
 namespace DesktopQRTools
 {
@@ -58,17 +59,14 @@ namespace DesktopQRTools
             int width = (int)Math.Abs(endPoint.X - startPoint.X);
             int height = (int)Math.Abs(endPoint.Y - startPoint.Y);
 
-            var screenBmp = new BitmapSource(
-                new System.Windows.Int32Rect(x, y, width, height),
-                96, 96,
-                System.Windows.Media.PixelFormats.Bgr32,
-                null,
-                width * height * 4,
-                width * 4
-            );
+            // Capture the entire screen
+            var screenBmp = CaptureScreen();
+
+            // Crop the captured screen to the selected area
+            var croppedBmp = new CroppedBitmap(screenBmp, new Int32Rect(x, y, width, height));
 
             BarcodeReader reader = new BarcodeReader();
-            Result result = reader.Decode(screenBmp);
+            Result result = reader.Decode(croppedBmp);
 
             if (result != null)
             {
@@ -77,6 +75,26 @@ namespace DesktopQRTools
             else
             {
                 MessageBox.Show("No QR code found in the selected area.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private BitmapSource CaptureScreen()
+        {
+            using (var screenBmp = new System.Drawing.Bitmap(
+                (int)SystemParameters.PrimaryScreenWidth,
+                (int)SystemParameters.PrimaryScreenHeight,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+            {
+                using (var g = System.Drawing.Graphics.FromImage(screenBmp))
+                {
+                    g.CopyFromScreen(0, 0, 0, 0, screenBmp.Size);
+                }
+
+                return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                    screenBmp.GetHbitmap(),
+                    IntPtr.Zero,
+                    Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
             }
         }
     }
