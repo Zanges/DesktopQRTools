@@ -218,7 +218,7 @@ namespace DesktopQRTools
             if (_generatedQRCode != null)
             {
                 string fileName = GetAutoSaveFileName();
-                string filePath = Path.Combine(_autoSaveDirectory, fileName);
+                string filePath = FileSystem.Path.Combine(_autoSaveDirectory, fileName);
                 SaveQRCodeImage(_generatedQRCode, filePath);
             }
         }
