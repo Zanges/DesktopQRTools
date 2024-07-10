@@ -67,7 +67,7 @@ namespace DesktopQRTools
                     g.CopyFromScreen(x, y, 0, 0, bitmap.Size);
                 }
 
-                BarcodeReader<Bitmap> reader = new BarcodeReader<Bitmap>(new BarcodeReaderGeneric());
+                BarcodeReader<Bitmap> reader = new BarcodeReader<Bitmap>();
                 Result result = reader.Decode(bitmap);
 
                 if (result != null)
