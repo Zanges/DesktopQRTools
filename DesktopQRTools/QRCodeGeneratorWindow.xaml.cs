@@ -99,24 +99,21 @@ namespace DesktopQRTools
         /// <returns>A bitmap image of the generated QR code.</returns>
         private WriteableBitmap GenerateQRCode(string text)
         {
-            var writer = new BarcodeWriterPixelData
+            var writer = new BarcodeWriter
             {
                 Format = BarcodeFormat.QR_CODE,
                 Options = new QrCodeEncodingOptions
                 {
                     Height = 300,
                     Width = 300,
-                    Margin = 1
+                    Margin = 1,
+                    ErrorCorrection = ZXing.QrCode.Internal.ErrorCorrectionLevel.H
                 }
             };
 
-            var pixelData = writer.Write(text);
-
-            var bitmap = new WriteableBitmap(pixelData.Width, pixelData.Height, 96, 96, System.Windows.Media.PixelFormats.Bgr32, null);
-
-            bitmap.WritePixels(new Int32Rect(0, 0, pixelData.Width, pixelData.Height), pixelData.Pixels, pixelData.Width * 4, 0);
-
-            return bitmap;
+            var bitmap = writer.Write(text);
+            var bitmapSource = ConvertToBitmapSource(bitmap);
+            return new WriteableBitmap(bitmapSource);
         }
 
         /// <summary>
