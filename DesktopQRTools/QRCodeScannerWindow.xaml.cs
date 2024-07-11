@@ -287,7 +287,7 @@ namespace DesktopQRTools
                 return null;
             }
         }
-
+        
         public string? CaptureAndScanQRCode(System.Windows.Point startPoint, System.Windows.Point endPoint, WriteableBitmap testBitmap)
         {
             try
