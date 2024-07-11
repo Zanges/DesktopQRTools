@@ -75,7 +75,7 @@ namespace DesktopQRTools
                         if (sender is QRCodeScannerWindow window)
                         {
                             window.Close();
-                            window = null;
+                            window = null!;
                         }
                     };
                     newWindow.Show();
@@ -237,7 +237,7 @@ namespace DesktopQRTools
             InstructionsTextBlock.Visibility = Visibility.Visible;
         }
 
-        public string CaptureAndScanQRCode(System.Windows.Point startPoint, System.Windows.Point endPoint)
+        public string? CaptureAndScanQRCode(System.Windows.Point startPoint, System.Windows.Point endPoint)
         {
             try
             {
@@ -251,7 +251,7 @@ namespace DesktopQRTools
                 System.Threading.Thread.Sleep(100); // Give time for the window to hide
 
                 // Capture the screen
-                var screenBmp = CaptureScreen();
+                var screenBmp = CaptureScreen()!;
                 WriteableBitmap writableBmp = new WriteableBitmap(screenBmp);
 
                 // Show the window again
@@ -313,7 +313,7 @@ namespace DesktopQRTools
             }
         }
 
-        private string? ScanQRCode(WriteableBitmap bitmap)
+        private string? ScanQRCode(WriteableBitmap? bitmap)
         {
             BarcodeReader reader = new BarcodeReader
             {
