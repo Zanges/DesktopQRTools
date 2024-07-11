@@ -7,10 +7,13 @@
         mc:Ignorable="d"
         Title="Desktop QR Tools" Height="200" Width="200">
     <Grid>
-        <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-            <Button x:Name="CreateQRCodeButton" Content="Create QR Code" Height="70" Margin="0" Click="CreateQRCodeButton_Click"/>
-            <Button x:Name="ScanQRCodeButton" Content="Scan QR Code" Height="70" Margin="0" Click="ScanQRCodeButton_Click"/>
-            <Button x:Name="OptionsButton" Content="Options" Height="35" Margin="0" Click="OptionsButton_Click"/>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.5*"/>
+        </Grid.RowDefinitions>
+        <Button x:Name="CreateQRCodeButton" Content="Create QR Code" Grid.Row="0" Margin="5" Click="CreateQRCodeButton_Click"/>
+        <Button x:Name="ScanQRCodeButton" Content="Scan QR Code" Grid.Row="1" Margin="5" Click="ScanQRCodeButton_Click"/>
+        <Button x:Name="OptionsButton" Content="Options" Grid.Row="2" Margin="5" Click="OptionsButton_Click"/>
     </Grid>
 </Window>
