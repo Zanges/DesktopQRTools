@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Configuration;
 
 namespace DesktopQRTools
 {
@@ -13,19 +15,19 @@ namespace DesktopQRTools
     {
         private GlobalHotKey _globalHotKey;
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
             MainWindow = new MainWindow();
             MainWindow.Show();
 
-            SetupGlobalHotKey();
+            await SetupGlobalHotKeyAsync();
 
-            MainWindow.Closed += (s, args) =>
+            MainWindow.Closed += async (s, args) =>
             {
                 // Dispose of the global hotkey
-                _globalHotKey?.Dispose();
+                await DisposeGlobalHotKeyAsync();
 
                 // Close all windows when the main window is closed
                 foreach (Window window in Windows.Cast<Window>().ToList())
@@ -39,19 +41,34 @@ namespace DesktopQRTools
             ComponentDispatcher.ThreadPreprocessMessage += ComponentDispatcher_ThreadPreprocessMessage;
         }
 
-        private void SetupGlobalHotKey()
+        public async Task SetupGlobalHotKeyAsync()
         {
-            // TODO: Replace with actual configured hotkey
-            ModifierKeys modifiers = ModifierKeys.Control | ModifierKeys.Alt;
-            Key key = Key.S;
+            await DisposeGlobalHotKeyAsync();
 
             try
             {
+                var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var modifiersString = config.AppSettings.Settings["HotkeyModifiers"]?.Value ?? "Control,Alt";
+                var keyString = config.AppSettings.Settings["HotkeyKey"]?.Value ?? "S";
+
+                ModifierKeys modifiers = (ModifierKeys)Enum.Parse(typeof(ModifierKeys), modifiersString.Replace(",", " "), true);
+                Key key = (Key)Enum.Parse(typeof(Key), keyString);
+
                 _globalHotKey = new GlobalHotKey(modifiers, key, new WindowInteropHelper(MainWindow).Handle);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to register global hotkey: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task DisposeGlobalHotKeyAsync()
+        {
+            if (_globalHotKey != null)
+            {
+                _globalHotKey.Dispose();
+                _globalHotKey = null;
+                await Task.Delay(100); // Give some time for the hotkey to be unregistered
             }
         }
 
