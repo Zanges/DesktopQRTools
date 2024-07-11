@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Linq;
 
 namespace DesktopQRTools
 {
@@ -17,7 +18,12 @@ namespace DesktopQRTools
             MainWindow.Closed += (s, args) =>
             {
                 // Close all windows when the main window is closed
-                foreach (Window window in Windows)
+                foreach (Window window in Windows.Cast<Window>().ToList())
+                {
+                    window.Close();
+                }
+                Shutdown();
+            };
                 {
                     window.Close();
                 }
