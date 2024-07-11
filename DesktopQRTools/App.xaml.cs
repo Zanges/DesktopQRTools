@@ -25,11 +25,5 @@ namespace DesktopQRTools
                 Shutdown();
             };
         }
-            };
-                {
-                    window.Close();
-                }
-            };
-        }
     }
 }
