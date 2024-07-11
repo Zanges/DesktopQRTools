@@ -47,14 +47,8 @@ namespace DesktopQRTools
 
             try
             {
-                var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                var modifiersString = config.AppSettings.Settings["HotkeyModifiers"]?.Value ?? "Control,Alt";
-                var keyString = config.AppSettings.Settings["HotkeyKey"]?.Value ?? "S";
-
-                ModifierKeys modifiers = (ModifierKeys)Enum.Parse(typeof(ModifierKeys), modifiersString.Replace(",", " "), true);
-                Key key = (Key)Enum.Parse(typeof(Key), keyString);
-
-                _globalHotKey = new GlobalHotKey(modifiers, key, new WindowInteropHelper(MainWindow).Handle);
+                var hotkey = (KeyGesture)FindResource("GlobalHotkey");
+                _globalHotKey = new GlobalHotKey(hotkey.Modifiers, hotkey.Key, new WindowInteropHelper(MainWindow).Handle);
             }
             catch (Exception ex)
             {

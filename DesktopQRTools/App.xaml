@@ -3,6 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:DesktopQRTools">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Add any additional resource dictionaries here if needed -->
+            </ResourceDictionary.MergedDictionaries>
+            
+            <!-- Global Hotkey Settings -->
+            <KeyGesture x:Key="GlobalHotkey">Ctrl+Alt+S</KeyGesture>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
