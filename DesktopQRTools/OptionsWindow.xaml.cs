@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Input;
 using Microsoft.Win32;
 
 namespace DesktopQRTools
@@ -8,6 +9,8 @@ namespace DesktopQRTools
     public partial class OptionsWindow : Window
     {
         private const string ConfigFileName = "config.ini";
+        private Key _scanHotkey;
+        private ModifierKeys _scanHotkeyModifiers;
 
         public enum ScannerMode
         {
@@ -21,6 +24,42 @@ namespace DesktopQRTools
             InitializeComponent();
             LoadOptions();
             UpdateControlsState();
+        }
+
+        private void ScanHotkeyTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+            
+            // Clear the textbox if Escape is pressed
+            if (e.Key == Key.Escape)
+            {
+                ScanHotkeyTextBox.Clear();
+                _scanHotkey = Key.None;
+                _scanHotkeyModifiers = ModifierKeys.None;
+                return;
+            }
+
+            // Ignore modifier keys when pressed alone
+            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl || e.Key == Key.LeftAlt || e.Key == Key.RightAlt || e.Key == Key.LeftShift || e.Key == Key.RightShift)
+            {
+                return;
+            }
+
+            _scanHotkey = e.Key;
+            _scanHotkeyModifiers = Keyboard.Modifiers;
+
+            string hotkeyText = GetHotkeyString();
+            ScanHotkeyTextBox.Text = hotkeyText;
+        }
+
+        private string GetHotkeyString()
+        {
+            string hotkeyText = "";
+            if (_scanHotkeyModifiers.HasFlag(ModifierKeys.Control)) hotkeyText += "Ctrl + ";
+            if (_scanHotkeyModifiers.HasFlag(ModifierKeys.Alt)) hotkeyText += "Alt + ";
+            if (_scanHotkeyModifiers.HasFlag(ModifierKeys.Shift)) hotkeyText += "Shift + ";
+            hotkeyText += _scanHotkey.ToString();
+            return hotkeyText;
         }
 
         private void SkipSaveDialogCheckBox_CheckedChanged(object sender, RoutedEventArgs e)
@@ -79,6 +118,8 @@ namespace DesktopQRTools
                     writer.WriteLine($"AppendDate={AppendDateCheckBox.IsChecked}");
                     writer.WriteLine($"AppendTime={AppendTimeCheckBox.IsChecked}");
                     writer.WriteLine($"ScannerMode={ScannerModeComboBox.SelectedIndex}");
+                    writer.WriteLine($"ScanHotkey={_scanHotkey}");
+                    writer.WriteLine($"ScanHotkeyModifiers={_scanHotkeyModifiers}");
                 }
 
                 return true;
@@ -129,10 +170,21 @@ namespace DesktopQRTools
                                     if (int.TryParse(parts[1], out int scannerMode))
                                         ScannerModeComboBox.SelectedIndex = scannerMode;
                                     break;
+                                case "ScanHotkey":
+                                    if (Enum.TryParse(parts[1], out Key scanHotkey))
+                                        _scanHotkey = scanHotkey;
+                                    break;
+                                case "ScanHotkeyModifiers":
+                                    if (Enum.TryParse(parts[1], out ModifierKeys scanHotkeyModifiers))
+                                        _scanHotkeyModifiers = scanHotkeyModifiers;
+                                    break;
                             }
                         }
                     }
                 }
+
+                // Update the ScanHotkeyTextBox
+                ScanHotkeyTextBox.Text = GetHotkeyString();
             }
             catch (Exception ex)
             {
