@@ -62,6 +62,15 @@ namespace DesktopQRTools
             UpdateInstructionsText();
         }
 
+        public static void ShowNew()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var newWindow = new QRCodeScannerWindow();
+                newWindow.Show();
+            });
+        }
+
         private void InitializeTargetingRectangle()
         {
             targetingRectangle = new Rectangle
