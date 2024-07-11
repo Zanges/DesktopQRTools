@@ -32,8 +32,26 @@ namespace DesktopQRTools
         /// <param name="e">The event data.</param>
         private void ScanQRCodeButton_Click(object sender, RoutedEventArgs e)
         {
-            QRCodeScannerWindow scannerWindow = new QRCodeScannerWindow();
-            scannerWindow.Show();
+            try
+            {
+                QRCodeScannerWindow.ShowNew();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while opening the QR Code Scanner: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Event handler for the Options button click.
+        /// Opens the Options window.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
+        private void OptionsButton_Click(object sender, RoutedEventArgs e)
+        {
+            OptionsWindow optionsWindow = new OptionsWindow();
+            optionsWindow.ShowDialog();
         }
     }
 }

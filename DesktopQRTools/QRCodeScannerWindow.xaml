@@ -11,21 +11,17 @@
         AllowsTransparency="True"
         Background="Transparent"
         Topmost="True">
-    <Grid>
-        <Canvas>
-            <Rectangle x:Name="SelectionRectangle" 
-                       Stroke="Red" 
-                       StrokeThickness="2" 
-                       Fill="#3000FF00"
-                       Visibility="Collapsed"/>
-        </Canvas>
+    <Canvas>
+        <Rectangle x:Name="SelectionRectangle" 
+                   Stroke="Red" 
+                   StrokeThickness="2" 
+                   Fill="#3000FF00"
+                   Visibility="Collapsed"/>
         <TextBlock x:Name="InstructionsTextBlock"
                    Text="Click and drag to select the area containing the QR code"
                    FontSize="24"
                    Foreground="White"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Top"
-                   Margin="0,50,0,0"/>
-        <!-- Remove the ResultPanel and its contents -->
-    </Grid>
+                   Canvas.Left="50"
+                   Canvas.Top="50"/>
+    </Canvas>
 </Window>

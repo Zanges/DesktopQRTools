@@ -5,8 +5,11 @@ using ZXing;
 using ZXing.QrCode;
 using ZXing.Windows.Compatibility;
 using System.IO;
+using System.IO.Abstractions;
 using Microsoft.Win32;
 using System.Windows.Media;
+using System.Configuration;
+using System.IO.Abstractions.TestingHelpers;
 
 namespace DesktopQRTools
 {
@@ -17,10 +20,62 @@ namespace DesktopQRTools
     {
         private WriteableBitmap? _generatedQRCode;
         private string? _qrCodeContent;
+        private string _autoSaveQRCodeName = "QRCode";
+        private string _autoSaveDirectory = "";
+        private bool _skipSaveDialog = false;
+        private bool _appendDate = false;
+        private bool _appendTime = false;
 
-        public QRCodeGeneratorWindow()
+        public virtual IFileSystem FileSystem { get; protected set; } = new FileSystem();
+
+        public QRCodeGeneratorWindow(string? configPath = "")
         {
             InitializeComponent();
+            LoadConfiguration(string.IsNullOrEmpty(configPath) ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini") : configPath);
+        }
+
+        // Constructor for testing with mock file system
+        public QRCodeGeneratorWindow(string? configPath, IFileSystem fileSystem) : this(configPath)
+        {
+            FileSystem = fileSystem;
+        }
+
+        private void LoadConfiguration(string? configFilePath = null)
+        {
+            if (configFilePath == null)
+            {
+                configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
+            }
+
+            if (File.Exists(configFilePath))
+            {
+                string[] lines = File.ReadAllLines(configFilePath);
+                foreach (string line in lines)
+                {
+                    string[] parts = line.Split('=');
+                    if (parts.Length == 2)
+                    {
+                        switch (parts[0])
+                        {
+                            case "AutoSaveQRCodeName":
+                                _autoSaveQRCodeName = parts[1];
+                                break;
+                            case "SkipSaveDialog":
+                                bool.TryParse(parts[1], out _skipSaveDialog);
+                                break;
+                            case "AutoSaveDirectory":
+                                _autoSaveDirectory = parts[1];
+                                break;
+                            case "AppendDate":
+                                bool.TryParse(parts[1], out _appendDate);
+                                break;
+                            case "AppendTime":
+                                bool.TryParse(parts[1], out _appendTime);
+                                break;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -65,37 +120,54 @@ namespace DesktopQRTools
                 return;
             }
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog
-            {
-                Filter = (ImageFormatComboBox.SelectedIndex == 0) ? "PNG Image|*.png" : "SVG Image|*.svg",
-                Title = "Save QR Code Image"
-            };
+            string fileName;
+            string filePath;
 
-            if (saveFileDialog.ShowDialog() == true)
+            if (_skipSaveDialog && !string.IsNullOrEmpty(_autoSaveDirectory))
             {
-                try
+                fileName = GetAutoSaveFileName();
+                filePath = Path.Combine(_autoSaveDirectory, fileName);
+            }
+            else
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    if (ImageFormatComboBox.SelectedIndex == 0)
+                    FileName = _autoSaveQRCodeName,
+                    Filter = (ImageFormatComboBox.SelectedIndex == 0) ? "PNG Image|*.png" : "SVG Image|*.svg",
+                    Title = "Save QR Code Image"
+                };
+
+                if (saveFileDialog.ShowDialog() != true)
+                {
+                    return;
+                }
+
+                filePath = saveFileDialog.FileName;
+            }
+
+            try
+            {
+                if (ImageFormatComboBox.SelectedIndex == 0)
+                {
+                    SaveQRCodeImage(_generatedQRCode, filePath);
+                }
+                else
+                {
+                    if (_qrCodeContent != null)
                     {
-                        SaveQRCodeImage(_generatedQRCode, saveFileDialog.FileName);
+                        SaveQRCodeAsSvg(_qrCodeContent, filePath);
                     }
                     else
                     {
-                        if (_qrCodeContent != null)
-                        {
-                            SaveQRCodeAsSvg(_qrCodeContent, saveFileDialog.FileName);
-                            MessageBox.Show("QR code image saved successfully.", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                        else
-                        {
-                            MessageBox.Show("No QR code content available to save.", "Save Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        }
+                        MessageBox.Show("No QR code content available to save.", "Save Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
                     }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"An error occurred while saving the QR code image: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                MessageBox.Show("QR code image saved successfully.", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while saving the QR code image: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -132,12 +204,49 @@ namespace DesktopQRTools
         /// <param name="filePath">The file path to save the image.</param>
         private void SaveQRCodeImage(WriteableBitmap bitmap, string filePath)
         {
-            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+            using (var stream = FileSystem.File.Create(filePath))
             {
                 PngBitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(bitmap));
                 encoder.Save(stream);
+                stream.Flush();
             }
+        }
+
+        // Public method for testing
+        public void SaveQRCode()
+        {
+            if (_generatedQRCode != null)
+            {
+                string fileName = GetAutoSaveFileName();
+                string filePath = FileSystem.Path.Combine(_autoSaveDirectory, fileName);
+                SaveQRCodeImage(_generatedQRCode, filePath);
+            }
+        }
+
+        public string GetAutoSaveFileName()
+        {
+            string fileName = _autoSaveQRCodeName;
+            if (_appendDate)
+                fileName += $"-{DateTime.Now:yyyyMMdd}";
+            if (_appendTime)
+                fileName += $"-{DateTime.Now:HHmmss}";
+            
+            string extension = ImageFormatComboBox.SelectedIndex == 0 ? "png" : "svg";
+            fileName += $".{extension}";
+
+            // If file already exists, append a number
+            int counter = 1;
+            string fileNameWithoutExtension = FileSystem.Path.GetFileNameWithoutExtension(fileName);
+            string filePath = FileSystem.Path.Combine(_autoSaveDirectory, fileName);
+            while (FileSystem.File.Exists(filePath))
+            {
+                fileName = $"{fileNameWithoutExtension}_{counter}.{extension}";
+                filePath = FileSystem.Path.Combine(_autoSaveDirectory, fileName);
+                counter++;
+            }
+
+            return fileName;
         }
 
         /// <summary>
@@ -182,5 +291,13 @@ namespace DesktopQRTools
             var svgImage = qrCodeWriter.Write(content);
             File.WriteAllText(filePath, svgImage.Content);
         }
+
+
+        // Methods to support testing
+        public string GetAutoSaveQRCodeName() => _autoSaveQRCodeName;
+        public bool GetSkipSaveDialog() => _skipSaveDialog;
+        public string GetAutoSaveDirectory() => _autoSaveDirectory;
+        public bool GetAppendDate() => _appendDate;
+        public bool GetAppendTime() => _appendTime;
     }
 }

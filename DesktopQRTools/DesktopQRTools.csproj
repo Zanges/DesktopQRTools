@@ -12,6 +12,8 @@
       <PackageReference Include="ZXing.Net" Version="0.16.9" />
       <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
       <PackageReference Include="ZXing.Net.Bindings.Windows.Compatibility" Version="0.16.12" />
+      <PackageReference Include="System.IO.Abstractions" Version="19.2.29" />
+      <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="19.2.29" />
     </ItemGroup>
 
 </Project>
