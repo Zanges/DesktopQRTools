@@ -32,7 +32,14 @@ namespace DesktopQRTools
         /// <param name="e">The event data.</param>
         private void ScanQRCodeButton_Click(object sender, RoutedEventArgs e)
         {
-            QRCodeScannerWindow.ShowNew();
+            try
+            {
+                QRCodeScannerWindow.ShowNew();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while opening the QR Code Scanner: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         /// <summary>

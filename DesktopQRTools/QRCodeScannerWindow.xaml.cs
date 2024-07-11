@@ -67,6 +67,7 @@ namespace DesktopQRTools
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var newWindow = new QRCodeScannerWindow();
+                newWindow.Closed += (sender, args) => newWindow = null;
                 newWindow.Show();
             });
         }
