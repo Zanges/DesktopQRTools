@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopQRTools"
         mc:Ignorable="d"
-        Title="Options" SizeToContent="WidthAndHeight" MinWidth="400" MinHeight="500">
+        Title="Options" SizeToContent="WidthAndHeight" MinWidth="400" MinHeight="300">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -13,7 +13,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
-        <TextBlock Text="Options" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+        <TextBlock Text="Options" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
         
         <StackPanel Grid.Row="1">
             <GroupBox Header="QR Code Save Options">
