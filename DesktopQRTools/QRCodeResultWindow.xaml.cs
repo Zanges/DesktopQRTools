@@ -3,7 +3,6 @@ using System.Windows;
 using System.Diagnostics;
 using Microsoft.Win32;
 using System.IO;
-using System.Windows.Controls;
 
 namespace DesktopQRTools
 {
@@ -13,9 +12,6 @@ namespace DesktopQRTools
         {
             InitializeComponent();
             ContentTextBlock.Text = content;
-        }
-
-        public TextBlock ContentTextBlock { get; private set; }
 
             if (Uri.TryCreate(content, UriKind.Absolute, out Uri? uriResult) &&
                 (uriResult?.Scheme == Uri.UriSchemeHttp || uriResult?.Scheme == Uri.UriSchemeHttps))
