@@ -111,8 +111,8 @@ namespace DesktopQRTools
         {
             if (msg.message == 786) // WM_HOTKEY
             {
-                // Trigger the stand functionality
-                ((MainWindow)MainWindow).TriggerStandFunctionality();
+                // Trigger the QR code scan functionality
+                ((MainWindow)MainWindow).TriggerHotkeyFunctionality();
                 handled = true;
             }
         }
