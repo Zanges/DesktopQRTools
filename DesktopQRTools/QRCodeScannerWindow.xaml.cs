@@ -24,6 +24,9 @@ namespace DesktopQRTools
         private System.Windows.Point startPoint;
         private OptionsWindow.ScannerMode scannerMode;
         private Rectangle targetingRectangle;
+        private const double MinRectangleSize = 50;
+        private const double MaxRectangleSize = 400;
+        private const double RectangleSizeStep = 10;
 
         public QRCodeScannerWindow()
         {
@@ -32,6 +35,7 @@ namespace DesktopQRTools
             this.MouseLeftButtonUp += QRCodeScannerWindow_MouseLeftButtonUp;
             this.MouseMove += QRCodeScannerWindow_MouseMove;
             this.KeyDown += QRCodeScannerWindow_KeyDown;
+            this.MouseWheel += QRCodeScannerWindow_MouseWheel;
 
             // Make the window transparent but not click-through
             this.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
@@ -54,6 +58,8 @@ namespace DesktopQRTools
             {
                 AutomaticScan();
             }
+
+            UpdateInstructionsText();
         }
 
         private void InitializeTargetingRectangle()
@@ -68,6 +74,46 @@ namespace DesktopQRTools
             Canvas.SetLeft(targetingRectangle, 0);
             Canvas.SetTop(targetingRectangle, 0);
             ((Canvas)this.Content).Children.Add(targetingRectangle);
+        }
+
+        private void QRCodeScannerWindow_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (scannerMode == OptionsWindow.ScannerMode.TargetingRectangle)
+            {
+                double delta = e.Delta > 0 ? RectangleSizeStep : -RectangleSizeStep;
+                ResizeTargetingRectangle(delta);
+            }
+        }
+
+        private void ResizeTargetingRectangle(double delta)
+        {
+            double newSize = targetingRectangle.Width + delta;
+            newSize = Math.Max(MinRectangleSize, Math.Min(MaxRectangleSize, newSize));
+
+            double centerX = Canvas.GetLeft(targetingRectangle) + targetingRectangle.Width / 2;
+            double centerY = Canvas.GetTop(targetingRectangle) + targetingRectangle.Height / 2;
+
+            targetingRectangle.Width = newSize;
+            targetingRectangle.Height = newSize;
+
+            Canvas.SetLeft(targetingRectangle, centerX - newSize / 2);
+            Canvas.SetTop(targetingRectangle, centerY - newSize / 2);
+        }
+
+        private void UpdateInstructionsText()
+        {
+            switch (scannerMode)
+            {
+                case OptionsWindow.ScannerMode.DrawBox:
+                    InstructionsTextBlock.Text = "Click and drag to select the area containing the QR code";
+                    break;
+                case OptionsWindow.ScannerMode.TargetingRectangle:
+                    InstructionsTextBlock.Text = "Move the targeting rectangle over the QR code. Use the scroll wheel to resize.";
+                    break;
+                case OptionsWindow.ScannerMode.AutomaticDetection:
+                    InstructionsTextBlock.Text = "Scanning for QR codes automatically...";
+                    break;
+            }
         }
 
         private void AutomaticScan()
@@ -111,8 +157,15 @@ namespace DesktopQRTools
             if (scannerMode == OptionsWindow.ScannerMode.TargetingRectangle)
             {
                 var currentPoint = e.GetPosition(null);
-                Canvas.SetLeft(targetingRectangle, currentPoint.X - targetingRectangle.Width / 2);
-                Canvas.SetTop(targetingRectangle, currentPoint.Y - targetingRectangle.Height / 2);
+                double left = currentPoint.X - targetingRectangle.Width / 2;
+                double top = currentPoint.Y - targetingRectangle.Height / 2;
+
+                // Ensure the rectangle stays within the window bounds
+                left = Math.Max(0, Math.Min(left, this.ActualWidth - targetingRectangle.Width));
+                top = Math.Max(0, Math.Min(top, this.ActualHeight - targetingRectangle.Height));
+
+                Canvas.SetLeft(targetingRectangle, left);
+                Canvas.SetTop(targetingRectangle, top);
             }
             else if (scannerMode == OptionsWindow.ScannerMode.DrawBox && e.LeftButton == MouseButtonState.Pressed)
             {
