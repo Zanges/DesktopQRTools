@@ -47,13 +47,53 @@ namespace DesktopQRTools
 
             try
             {
-                var hotkey = (KeyGesture)FindResource("GlobalHotkey");
-                _globalHotKey = new GlobalHotKey(hotkey.Modifiers, hotkey.Key, new WindowInteropHelper(MainWindow).Handle);
+                var (modifiers, key) = LoadHotkeyFromConfig();
+                _globalHotKey = new GlobalHotKey(modifiers, key, new WindowInteropHelper(MainWindow).Handle);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to register global hotkey: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private (ModifierKeys modifiers, Key key) LoadHotkeyFromConfig()
+        {
+            string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string configFilePath = Path.Combine(appDirectory, "config.ini");
+
+            if (File.Exists(configFilePath))
+            {
+                string[] lines = File.ReadAllLines(configFilePath);
+                ModifierKeys modifiers = ModifierKeys.None;
+                Key key = Key.None;
+
+                foreach (string line in lines)
+                {
+                    string[] parts = line.Split('=');
+                    if (parts.Length == 2)
+                    {
+                        switch (parts[0])
+                        {
+                            case "ScanHotkey":
+                                if (Enum.TryParse(parts[1], out Key parsedKey))
+                                    key = parsedKey;
+                                break;
+                            case "ScanHotkeyModifiers":
+                                if (Enum.TryParse(parts[1], out ModifierKeys parsedModifiers))
+                                    modifiers = parsedModifiers;
+                                break;
+                        }
+                    }
+                }
+
+                if (key != Key.None)
+                {
+                    return (modifiers, key);
+                }
+            }
+
+            // If config file doesn't exist or hotkey is not set, return default values
+            return (ModifierKeys.Control | ModifierKeys.Alt, Key.S);
         }
 
         private async Task DisposeGlobalHotKeyAsync()
