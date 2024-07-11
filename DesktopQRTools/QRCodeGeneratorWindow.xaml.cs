@@ -28,19 +28,19 @@ namespace DesktopQRTools
 
         public virtual IFileSystem FileSystem { get; protected set; } = new FileSystem();
 
-        public QRCodeGeneratorWindow(string configPath = "")
+        public QRCodeGeneratorWindow(string? configPath = "")
         {
             InitializeComponent();
             LoadConfiguration(string.IsNullOrEmpty(configPath) ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini") : configPath);
         }
 
         // Constructor for testing with mock file system
-        public QRCodeGeneratorWindow(string configPath, IFileSystem fileSystem) : this(configPath)
+        public QRCodeGeneratorWindow(string? configPath, IFileSystem fileSystem) : this(configPath)
         {
             FileSystem = fileSystem;
         }
 
-        private void LoadConfiguration(string configFilePath = null)
+        private void LoadConfiguration(string? configFilePath = null)
         {
             if (configFilePath == null)
             {
