@@ -19,9 +19,10 @@ namespace DesktopQRTools
     /// <summary>
     /// Interaction logic for QRCodeScannerWindow.xaml
     /// </summary>
-    public partial class QRCodeScannerWindow : Window
+    public partial class QRCodeScannerWindow : Window, IDisposable
     {
         private System.Windows.Point startPoint;
+        private bool disposedValue;
         private OptionsWindow.ScannerMode scannerMode;
         private Rectangle targetingRectangle;
         private const double MinRectangleSize = 50;
@@ -69,7 +70,14 @@ namespace DesktopQRTools
                 try
                 {
                     var newWindow = new QRCodeScannerWindow();
-                    newWindow.Closed += (sender, args) => newWindow = null;
+                    newWindow.Closed += (sender, args) =>
+                    {
+                        if (sender is QRCodeScannerWindow window)
+                        {
+                            window.Close();
+                            window = null;
+                        }
+                    };
                     newWindow.Show();
                 }
                 catch (Exception ex)
@@ -366,6 +374,35 @@ namespace DesktopQRTools
                     Int32Rect.Empty,
                     BitmapSizeOptions.FromEmptyOptions())!;
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~QRCodeScannerWindow()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
