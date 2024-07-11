@@ -19,7 +19,7 @@ namespace DesktopQRToolsTests
     public class QRCodeGenerationTests
     {
         private QRCodeGeneratorWindow? _generatorWindow;
-        private string _testConfigPath;
+        private string? _testConfigPath;
 
         [SetUp]
         public void Setup()
