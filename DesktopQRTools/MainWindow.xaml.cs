@@ -33,14 +33,7 @@ namespace DesktopQRTools
         /// <param name="e">The event data.</param>
         private void ScanQRCodeButton_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                QRCodeScannerWindow.ShowNew();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error occurred while opening the QR Code Scanner: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            QRCodeScanFunctionality.TriggerQRScan();
         }
 
         /// <summary>
@@ -56,12 +49,11 @@ namespace DesktopQRTools
         }
 
         /// <summary>
-        /// Triggers the stand functionality when the global hotkey is pressed.
+        /// Triggers the QR code scan functionality when the global hotkey is pressed.
         /// </summary>
-        public void TriggerStandFunctionality()
+        public void TriggerHotkeyFunctionality()
         {
-            // TODO: Implement the actual stand functionality here
-            MessageBox.Show("Stand functionality triggered!", "Stand", MessageBoxButton.OK, MessageBoxImage.Information);
+            QRCodeScanFunctionality.TriggerQRScan();
         }
     }
 }
