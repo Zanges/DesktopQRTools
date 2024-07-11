@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace DesktopQRTools
 {
@@ -52,6 +53,15 @@ namespace DesktopQRTools
         {
             OptionsWindow optionsWindow = new OptionsWindow();
             optionsWindow.ShowDialog();
+        }
+
+        /// <summary>
+        /// Triggers the stand functionality when the global hotkey is pressed.
+        /// </summary>
+        public void TriggerStandFunctionality()
+        {
+            // TODO: Implement the actual stand functionality here
+            MessageBox.Show("Stand functionality triggered!", "Stand", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
