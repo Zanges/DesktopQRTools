@@ -66,9 +66,16 @@ namespace DesktopQRTools
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                var newWindow = new QRCodeScannerWindow();
-                newWindow.Closed += (sender, args) => newWindow = null;
-                newWindow.Show();
+                try
+                {
+                    var newWindow = new QRCodeScannerWindow();
+                    newWindow.Closed += (sender, args) => newWindow = null;
+                    newWindow.Show();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred while opening the QR Code Scanner: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             });
         }
 
@@ -137,7 +144,7 @@ namespace DesktopQRTools
             else
             {
                 MessageBox.Show("No QR code found on the screen.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
-                this.Close();
+                Application.Current.Dispatcher.InvokeAsync(() => this.Close());
             }
         }
 
