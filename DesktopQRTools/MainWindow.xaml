@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopQRTools"
         mc:Ignorable="d"
-        Title="Desktop QR Tools" Height="450" Width="800">
+        Title="Desktop QR Tools" Height="200" Width="200">
     <Grid>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Button x:Name="CreateQRCodeButton" Content="Create QR Code" Width="200" Height="50" Margin="0,0,0,20" Click="CreateQRCodeButton_Click"/>
-            <Button x:Name="ScanQRCodeButton" Content="Scan QR Code" Width="200" Height="50" Margin="0,0,0,20" Click="ScanQRCodeButton_Click"/>
-            <Button x:Name="OptionsButton" Content="Options" Width="200" Height="50" Click="OptionsButton_Click"/>
+        <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Button x:Name="CreateQRCodeButton" Content="Create QR Code" Height="70" Margin="0" Click="CreateQRCodeButton_Click"/>
+            <Button x:Name="ScanQRCodeButton" Content="Scan QR Code" Height="70" Margin="0" Click="ScanQRCodeButton_Click"/>
+            <Button x:Name="OptionsButton" Content="Options" Height="35" Margin="0" Click="OptionsButton_Click"/>
         </StackPanel>
     </Grid>
 </Window>
