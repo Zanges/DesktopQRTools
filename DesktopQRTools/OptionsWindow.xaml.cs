@@ -26,30 +26,85 @@ namespace DesktopQRTools
             UpdateControlsState();
         }
 
+        private bool _isRecording = false;
+
         private void ScanHotkeyTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = true;
             
-            // Clear the textbox if Escape is pressed
-            if (e.Key == Key.Escape)
+            if (!_isRecording)
             {
-                ScanHotkeyTextBox.Clear();
-                _scanHotkey = Key.None;
-                _scanHotkeyModifiers = ModifierKeys.None;
-                return;
-            }
+                // Clear the textbox if Escape is pressed
+                if (e.Key == Key.Escape)
+                {
+                    ScanHotkeyTextBox.Clear();
+                    _scanHotkey = Key.None;
+                    _scanHotkeyModifiers = ModifierKeys.None;
+                    return;
+                }
 
-            // Ignore modifier keys when pressed alone
-            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl || e.Key == Key.LeftAlt || e.Key == Key.RightAlt || e.Key == Key.LeftShift || e.Key == Key.RightShift)
+                // Ignore modifier keys when pressed alone
+                if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl || e.Key == Key.LeftAlt || e.Key == Key.RightAlt || e.Key == Key.LeftShift || e.Key == Key.RightShift)
+                {
+                    return;
+                }
+
+                _scanHotkey = e.Key;
+                _scanHotkeyModifiers = Keyboard.Modifiers;
+
+                string hotkeyText = GetHotkeyString();
+                ScanHotkeyTextBox.Text = hotkeyText;
+            }
+        }
+
+        private void RecordHotkeyButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_isRecording)
             {
-                return;
+                _isRecording = true;
+                RecordHotkeyButton.Content = "Stop";
+                ScanHotkeyTextBox.Text = "Press hotkey...";
+                ScanHotkeyTextBox.Focus();
             }
+            else
+            {
+                _isRecording = false;
+                RecordHotkeyButton.Content = "Record";
+                if (_scanHotkey == Key.None)
+                {
+                    ScanHotkeyTextBox.Text = "";
+                }
+            }
+        }
 
-            _scanHotkey = e.Key;
-            _scanHotkeyModifiers = Keyboard.Modifiers;
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            base.OnPreviewKeyDown(e);
 
-            string hotkeyText = GetHotkeyString();
-            ScanHotkeyTextBox.Text = hotkeyText;
+            if (_isRecording)
+            {
+                e.Handled = true;
+
+                if (e.Key == Key.Escape)
+                {
+                    _isRecording = false;
+                    RecordHotkeyButton.Content = "Record";
+                    ScanHotkeyTextBox.Text = "";
+                    _scanHotkey = Key.None;
+                    _scanHotkeyModifiers = ModifierKeys.None;
+                    return;
+                }
+
+                if (e.Key != Key.LeftCtrl && e.Key != Key.RightCtrl && e.Key != Key.LeftAlt && e.Key != Key.RightAlt && e.Key != Key.LeftShift && e.Key != Key.RightShift)
+                {
+                    _scanHotkey = e.Key;
+                    _scanHotkeyModifiers = Keyboard.Modifiers;
+                    string hotkeyText = GetHotkeyString();
+                    ScanHotkeyTextBox.Text = hotkeyText;
+                    _isRecording = false;
+                    RecordHotkeyButton.Content = "Record";
+                }
+            }
         }
 
         private string GetHotkeyString()
