@@ -149,7 +149,11 @@ namespace DesktopQRTools
 
         private void ShowNoQRCodeFoundMessage()
         {
-            MessageBox.Show("No QR code found on the screen.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+            string message = scannerMode == OptionsWindow.ScannerMode.AutomaticDetection
+                ? "No QR code found on screen."
+                : "No QR code found in the selected area.";
+            
+            MessageBox.Show(message, "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
             Application.Current.Dispatcher.InvokeAsync(() => this.Close());
         }
 
