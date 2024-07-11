@@ -61,6 +61,9 @@
             </GroupBox>
         </StackPanel>
         
-        <Button Grid.Row="2" Content="Save" HorizontalAlignment="Right" Width="75" Click="SaveButton_Click"/>
+        <Grid Grid.Row="2">
+            <TextBlock x:Name="StatusMessage" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="Collapsed"/>
+            <Button Content="Save" HorizontalAlignment="Right" Width="75" Click="SaveButton_Click"/>
+        </Grid>
     </Grid>
 </Window>

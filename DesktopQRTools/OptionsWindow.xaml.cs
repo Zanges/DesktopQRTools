@@ -149,13 +149,20 @@ namespace DesktopQRTools
         {
             if (SaveOptions())
             {
-                MessageBox.Show("Options saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                this.Close();
+                ShowStatusMessage("Options saved successfully!");
+                Task.Delay(2000).ContinueWith(_ => Dispatcher.Invoke(this.Close));
             }
             else
             {
-                MessageBox.Show("Failed to save options.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowStatusMessage("Failed to save options.", isError: true);
             }
+        }
+
+        private void ShowStatusMessage(string message, bool isError = false)
+        {
+            StatusMessage.Text = message;
+            StatusMessage.Foreground = isError ? Brushes.Red : Brushes.Green;
+            StatusMessage.Visibility = Visibility.Visible;
         }
 
         private bool SaveOptions()
