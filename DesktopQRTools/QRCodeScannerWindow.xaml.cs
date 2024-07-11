@@ -237,7 +237,7 @@ namespace DesktopQRTools
             InstructionsTextBlock.Visibility = Visibility.Visible;
         }
 
-        public string? CaptureAndScanQRCode(System.Windows.Point startPoint, System.Windows.Point endPoint)
+        public string CaptureAndScanQRCode(System.Windows.Point startPoint, System.Windows.Point endPoint)
         {
             try
             {
