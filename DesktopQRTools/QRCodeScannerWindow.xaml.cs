@@ -143,9 +143,14 @@ namespace DesktopQRTools
             }
             else
             {
-                MessageBox.Show("No QR code found on the screen.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
-                Application.Current.Dispatcher.InvokeAsync(() => this.Close());
+                ShowNoQRCodeFoundMessage();
             }
+        }
+
+        private void ShowNoQRCodeFoundMessage()
+        {
+            MessageBox.Show("No QR code found on the screen.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+            Application.Current.Dispatcher.InvokeAsync(() => this.Close());
         }
 
         private void QRCodeScannerWindow_KeyDown(object sender, KeyEventArgs e)
@@ -259,7 +264,7 @@ namespace DesktopQRTools
                 }
                 else
                 {
-                    MessageBox.Show("No QR code found in the selected area.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    ShowNoQRCodeFoundMessage();
                 }
                 return result;
             }
@@ -309,15 +314,7 @@ namespace DesktopQRTools
 
             Result result = reader.Decode(bitmap);
 
-            if (result != null)
-            {
-                return result.Text;
-            }
-            else
-            {
-                MessageBox.Show("No QR code found in the selected area.", "Scan Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return null;
-            }
+            return result?.Text;
         }
 
         private WriteableBitmap ConvertToGrayscale(BitmapSource source)
