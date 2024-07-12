@@ -139,6 +139,12 @@ namespace DesktopQRToolsTests
 
                 // Restore the default MessageBox.Show method
                 MessageBoxManager.Unregister();
+
+                // Test button fit
+                Assert.That(saveButton.ActualWidth, Is.LessThanOrEqualTo(_optionsWindow.ActualWidth),
+                    "Save button width should not exceed window width");
+                Assert.That(saveButton.ActualHeight, Is.LessThanOrEqualTo(_optionsWindow.ActualHeight),
+                    "Save button height should not exceed window height");
             });
 
             Assert.That(messageBoxShown, Is.True, "Message box should be shown");
