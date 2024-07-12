@@ -124,6 +124,21 @@ namespace DesktopQRToolsTests
 
             _optionsWindow!.Dispatcher.Invoke(() =>
             {
+                // Set some test values
+                var autoSaveQRCodeNameTextBox = _optionsWindow.FindName("AutoSaveQRCodeNameTextBox") as System.Windows.Controls.TextBox;
+                var skipSaveDialogCheckBox = _optionsWindow.FindName("SkipSaveDialogCheckBox") as System.Windows.Controls.CheckBox;
+                var autoSaveDirectoryTextBox = _optionsWindow.FindName("AutoSaveDirectoryTextBox") as System.Windows.Controls.TextBox;
+                var appendDateCheckBox = _optionsWindow.FindName("AppendDateCheckBox") as System.Windows.Controls.CheckBox;
+                var appendTimeCheckBox = _optionsWindow.FindName("AppendTimeCheckBox") as System.Windows.Controls.CheckBox;
+                var scannerModeComboBox = _optionsWindow.FindName("ScannerModeComboBox") as System.Windows.Controls.ComboBox;
+
+                autoSaveQRCodeNameTextBox!.Text = "TestSaveQRCode";
+                skipSaveDialogCheckBox!.IsChecked = true;
+                autoSaveDirectoryTextBox!.Text = @"C:\TestSaveDirectory";
+                appendDateCheckBox!.IsChecked = true;
+                appendTimeCheckBox!.IsChecked = false;
+                scannerModeComboBox!.SelectedIndex = 1; // TargetingRectangle
+
                 // Override the default MessageBox.Show method
                 MessageBoxManager.Register(() => new MessageBoxMock(result =>
                 {
@@ -149,6 +164,14 @@ namespace DesktopQRToolsTests
 
             Assert.That(messageBoxShown, Is.True, "Message box should be shown");
             Assert.That(messageBoxText, Is.EqualTo("Options saved successfully!"), "Message box should display correct text");
+
+            // Verify that the options were actually saved
+            Assert.That(_optionsWindow!.GetAutoSaveQRCodeName(), Is.EqualTo("TestSaveQRCode"), "Auto save QR code name should be saved");
+            Assert.That(_optionsWindow.GetSkipSaveDialog(), Is.True, "Skip save dialog should be saved");
+            Assert.That(_optionsWindow.GetAutoSaveDirectory(), Is.EqualTo(@"C:\TestSaveDirectory"), "Auto save directory should be saved");
+            Assert.That(_optionsWindow.GetAppendDate(), Is.True, "Append date should be saved");
+            Assert.That(_optionsWindow.GetAppendTime(), Is.False, "Append time should be saved");
+            Assert.That(_optionsWindow.GetScannerMode(), Is.EqualTo(OptionsWindow.ScannerMode.TargetingRectangle), "Scanner mode should be saved");
         }
     }
 
