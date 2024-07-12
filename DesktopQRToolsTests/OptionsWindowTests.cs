@@ -151,12 +151,6 @@ namespace DesktopQRToolsTests
 
                 // Simulate clicking the Save button
                 var saveButton = _optionsWindow.FindName("SaveButton") as System.Windows.Controls.Button;
-                if (saveButton == null)
-                {
-                    // If we can't find it by name, try to find it by content
-                    saveButton = _optionsWindow.FindChildren<System.Windows.Controls.Button>()
-                        .FirstOrDefault(b => b.Content.ToString() == "Save");
-                }
                 Assert.That(saveButton, Is.Not.Null, "Save button should exist");
                 saveButton!.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
 
