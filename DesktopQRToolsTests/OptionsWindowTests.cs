@@ -1,6 +1,8 @@
 using System;
 using System.Windows;
 using System.Windows.Threading;
+using System.Windows.Media;
+using System.Linq;
 using DesktopQRTools;
 using NUnit.Framework;
 
@@ -148,7 +150,13 @@ namespace DesktopQRToolsTests
                 }));
 
                 // Simulate clicking the Save button
-                var saveButton = _optionsWindow.FindName("SaveOptionsButton") as System.Windows.Controls.Button;
+                var saveButton = _optionsWindow.FindName("SaveButton") as System.Windows.Controls.Button;
+                if (saveButton == null)
+                {
+                    // If we can't find it by name, try to find it by content
+                    saveButton = _optionsWindow.FindChildren<System.Windows.Controls.Button>()
+                        .FirstOrDefault(b => b.Content.ToString() == "Save");
+                }
                 Assert.That(saveButton, Is.Not.Null, "Save button should exist");
                 saveButton!.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
 
@@ -219,6 +227,27 @@ namespace DesktopQRToolsTests
                 return _messageBox.Show(messageBoxText, caption, button, icon);
             }
             return MessageBox.Show(messageBoxText, caption, button, icon);
+        }
+    }
+
+    public static class WindowExtensions
+    {
+        public static IEnumerable<T> FindChildren<T>(this DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj == null) yield break;
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                if (child != null && child is T)
+                {
+                    yield return (T)child;
+                }
+
+                foreach (T childOfChild in FindChildren<T>(child))
+                {
+                    yield return childOfChild;
+                }
+            }
         }
     }
 }
