@@ -260,5 +260,10 @@ namespace DesktopQRTools
         {
             return (ScannerMode)ScannerModeComboBox.SelectedIndex;
         }
+
+        public int GetOptionsCount()
+        {
+            return 5; // Return the current number of options
+        }
     }
 }
