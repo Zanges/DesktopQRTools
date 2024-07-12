@@ -26,6 +26,14 @@ namespace DesktopQRToolsTests
         {
             Assert.That(_optionsWindow, Is.Not.Null, "Options window should be initialized");
             Assert.That(_optionsWindow!.Title, Is.EqualTo("Options"), "Window title should be 'Options'");
+            Assert.That(_optionsWindow.GetOptionsCount(), Is.EqualTo(5), "Options window should have 5 options");
+        }
+
+        [Test]
+        public void TestOptionsCount()
+        {
+            Assert.That(_optionsWindow, Is.Not.Null, "Options window should be initialized");
+            Assert.That(_optionsWindow!.GetOptionsCount(), Is.EqualTo(5), "Options window should have 5 options");
         }
 
         [Test]
