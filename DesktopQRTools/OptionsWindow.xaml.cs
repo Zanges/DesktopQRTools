@@ -265,5 +265,30 @@ namespace DesktopQRTools
         {
             return 5; // Return the current number of options
         }
+
+        public string GetAutoSaveQRCodeName()
+        {
+            return AutoSaveQRCodeNameTextBox.Text;
+        }
+
+        public bool GetSkipSaveDialog()
+        {
+            return SkipSaveDialogCheckBox.IsChecked ?? false;
+        }
+
+        public string GetAutoSaveDirectory()
+        {
+            return AutoSaveDirectoryTextBox.Text;
+        }
+
+        public bool GetAppendDate()
+        {
+            return AppendDateCheckBox.IsChecked ?? false;
+        }
+
+        public bool GetAppendTime()
+        {
+            return AppendTimeCheckBox.IsChecked ?? false;
+        }
     }
 }
