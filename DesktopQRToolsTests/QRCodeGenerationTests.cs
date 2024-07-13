@@ -55,6 +55,7 @@ namespace DesktopQRToolsTests
             ));
 
             var window = new QRCodeGeneratorWindow(configPath, mockFileSystem, isTestMode: true);
+            window.LoadConfiguration(configPath); // Explicitly load the configuration
 
             // Act
             string fileName = window.GetAutoSaveFileName();

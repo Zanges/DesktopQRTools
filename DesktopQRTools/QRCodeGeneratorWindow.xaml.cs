@@ -40,7 +40,7 @@ namespace DesktopQRTools
             FileSystem = fileSystem;
         }
 
-        private void LoadConfiguration(string? configFilePath = null)
+        public void LoadConfiguration(string? configFilePath = null)
         {
             if (configFilePath == null)
             {
