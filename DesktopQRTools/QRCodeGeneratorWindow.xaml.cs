@@ -224,27 +224,24 @@ namespace DesktopQRTools
             }
         }
 
-        private bool _isTestMode;
-
-        public QRCodeGeneratorWindow(string? configPath = "", bool isTestMode = false)
+        public QRCodeGeneratorWindow(string? configPath = "")
         {
             InitializeComponent();
-            _isTestMode = isTestMode;
             LoadConfiguration(string.IsNullOrEmpty(configPath) ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini") : configPath);
         }
 
         // Constructor for testing with mock file system
-        public QRCodeGeneratorWindow(string? configPath, IFileSystem fileSystem, bool isTestMode = false) : this(configPath, isTestMode)
+        public QRCodeGeneratorWindow(string? configPath, IFileSystem fileSystem) : this(configPath)
         {
             FileSystem = fileSystem;
         }
 
         public string GetAutoSaveFileName()
         {
-            string fileName = _isTestMode ? "TestQR-" : _autoSaveQRCodeName;
-            if (_appendDate || _isTestMode)
+            string fileName = _autoSaveQRCodeName;
+            if (_appendDate)
                 fileName += $"{DateTime.Now:yyyyMMdd}-";
-            if (_appendTime || _isTestMode)
+            if (_appendTime)
                 fileName += $"{DateTime.Now:HHmmss}-";
             
             string extension = ImageFormatComboBox.SelectedIndex == 0 ? "png" : "svg";
