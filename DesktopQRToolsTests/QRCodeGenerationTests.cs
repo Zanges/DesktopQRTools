@@ -54,7 +54,7 @@ namespace DesktopQRToolsTests
                 "AppendTime=true\n"
             ));
 
-            var window = new QRCodeGeneratorWindow(configPath, mockFileSystem);
+            var window = new QRCodeGeneratorWindow(configPath, mockFileSystem, isTestMode: true);
 
             // Act
             string fileName = window.GetAutoSaveFileName();
