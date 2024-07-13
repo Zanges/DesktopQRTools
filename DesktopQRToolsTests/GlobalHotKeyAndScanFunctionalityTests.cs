@@ -21,28 +21,28 @@ namespace DesktopQRToolsTests
             Assert.AreEqual(0x000FU, GlobalHotKey.ModifiersToUInt(ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Windows));
         }
 
-        [TestMethod]
-        public void TestQRCodeScanFunctionalityTrigger()
+    // Test wrapper class
+    private class TestWrapper : QRCodeScannerWindow
+    {
+        public static bool ShowNewCalled { get; private set; }
+
+        public static new void ShowNew()
         {
-            // This test verifies that the TriggerQRScan method calls QRCodeScannerWindow.ShowNew()
-            // We can't directly test the static method, so we'll use a wrapper class for testing
-            
-            bool showNewCalled = false;
-            
-            // Create a test wrapper that overrides the ShowNew method
-            class TestWrapper : QRCodeScannerWindow
-            {
-                public static new void ShowNew()
-                {
-                    showNewCalled = true;
-                }
-            }
-
-            // Call the TriggerQRScan method
-            QRCodeScanFunctionality.TriggerQRScan();
-
-            // Assert that ShowNew was called
-            Assert.IsTrue(showNewCalled, "QRCodeScannerWindow.ShowNew() should have been called");
+            ShowNewCalled = true;
         }
+    }
+
+    [TestMethod]
+    public void TestQRCodeScanFunctionalityTrigger()
+    {
+        // Reset the flag
+        TestWrapper.ShowNewCalled = false;
+
+        // Call the TriggerQRScan method
+        QRCodeScanFunctionality.TriggerQRScan();
+
+        // Assert that ShowNew was called
+        Assert.IsTrue(TestWrapper.ShowNewCalled, "QRCodeScannerWindow.ShowNew() should have been called");
+    }
     }
 }
