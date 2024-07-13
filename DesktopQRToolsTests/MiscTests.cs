@@ -2,16 +2,16 @@ using System;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using DesktopQRTools;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DesktopQRToolsTests
 {
-    [TestClass]
+    [TestFixture]
     public class MiscTests
     {
         private const string TestConfigFileName = "testconfig.ini";
 
-        [TestMethod]
+        [Test]
         public void TestConfigFileAutoGeneration()
         {
             // Arrange
@@ -44,7 +44,7 @@ namespace DesktopQRToolsTests
             File.Delete(testConfigPath);
         }
 
-        [TestMethod]
+        [Test]
         public void TestQRCodeGeneratorWindowAutoSaveFileName()
         {
             // Arrange

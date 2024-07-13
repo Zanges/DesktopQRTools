@@ -1,14 +1,14 @@
 using System;
 using System.Windows.Input;
 using DesktopQRTools;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DesktopQRToolsTests
 {
-    [TestClass]
+    [TestFixture]
     public class GlobalHotKeyAndScanFunctionalityTests
     {
-        [TestMethod]
+        [Test]
         public void TestGlobalHotKeyModifiersToUInt()
         {
             // Test various combinations of modifier keys
@@ -20,28 +20,28 @@ namespace DesktopQRToolsTests
             Assert.AreEqual(0x000FU, GlobalHotKey.ModifiersToUInt(ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Windows));
         }
 
-    // Test wrapper class
-    private class TestWrapper : QRCodeScannerWindow
-    {
-        public static bool ShowNewCalled { get; private set; }
-
-        public static new void ShowNew()
+        // Test wrapper class
+        private class TestWrapper : QRCodeScannerWindow
         {
-            ShowNewCalled = true;
+            public static bool ShowNewCalled { get; private set; }
+
+            public static new void ShowNew()
+            {
+                ShowNewCalled = true;
+            }
         }
-    }
 
-    [TestMethod]
-    public void TestQRCodeScanFunctionalityTrigger()
-    {
-        // Reset the flag
-        TestWrapper.ShowNewCalled = false;
+        [Test]
+        public void TestQRCodeScanFunctionalityTrigger()
+        {
+            // Reset the flag
+            TestWrapper.ShowNewCalled = false;
 
-        // Call the TriggerQRScan method
-        QRCodeScanFunctionality.TriggerQRScan();
+            // Call the TriggerQRScan method
+            QRCodeScanFunctionality.TriggerQRScan();
 
-        // Assert that ShowNew was called
-        Assert.IsTrue(TestWrapper.ShowNewCalled, "QRCodeScannerWindow.ShowNew() should have been called");
-    }
+            // Assert that ShowNew was called
+            Assert.IsTrue(TestWrapper.ShowNewCalled, "QRCodeScannerWindow.ShowNew() should have been called");
+        }
     }
 }
