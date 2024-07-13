@@ -73,10 +73,17 @@ namespace DesktopQRTools
 
         private void CreateDefaultConfigFile(string configFilePath)
         {
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string[] defaultConfig = new string[]
             {
-                "ScanHotkey=S",
-                "ScanHotkeyModifiers=Control, Alt"
+                "AutoSaveQRCodeName=QR-Code",
+                "SkipSaveDialog=True",
+                $"AutoSaveDirectory={desktopPath}",
+                "AppendDate=True",
+                "AppendTime=True",
+                "ScannerMode=2",
+                "ScanHotkey=Q",
+                "ScanHotkeyModifiers=Alt, Control"
             };
 
             File.WriteAllLines(configFilePath, defaultConfig);
