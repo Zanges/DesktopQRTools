@@ -45,6 +45,7 @@ namespace DesktopQRToolsTests
         }
 
         [Test]
+        [STAThread]
         public void TestQRCodeGeneratorWindowAutoSaveFileName()
         {
             // Arrange
