@@ -40,6 +40,38 @@ namespace DesktopQRToolsTests
             });
         }
 
+        [Test]
+        public void TestQRCodeGeneratorWindowAutoSaveFileName()
+        {
+            // Arrange
+            var mockFileSystem = new MockFileSystem();
+            var configPath = "C:\\TestConfig\\config.ini";
+            mockFileSystem.AddFile(configPath, new MockFileData(
+                "AutoSaveQRCodeName=TestQR\n" +
+                "SkipSaveDialog=true\n" +
+                "AutoSaveDirectory=C:\\TestSaveDir\n" +
+                "AppendDate=true\n" +
+                "AppendTime=true\n"
+            ));
+
+            var window = new QRCodeGeneratorWindow(configPath, mockFileSystem);
+
+            // Act
+            string fileName = window.GetAutoSaveFileName();
+
+            // Assert
+            Assert.That(fileName, Does.StartWith("TestQR-"), "File name should start with TestQR-");
+            Assert.That(fileName, Does.EndWith(".png"), "File name should end with .png");
+            Assert.That(fileName, Does.Contain(DateTime.Now.ToString("yyyyMMdd")), "File name should contain the current date");
+            Assert.That(fileName, Does.Contain(DateTime.Now.ToString("HHmmss")), "File name should contain the current time");
+
+            Assert.That(window.GetAutoSaveQRCodeName(), Is.EqualTo("TestQR"), "Auto-save QR code name should match the config");
+            Assert.That(window.GetSkipSaveDialog(), Is.True, "Skip save dialog should be true");
+            Assert.That(window.GetAutoSaveDirectory(), Is.EqualTo("C:\\TestSaveDir"), "Auto-save directory should match the config");
+            Assert.That(window.GetAppendDate(), Is.True, "Append date should be true");
+            Assert.That(window.GetAppendTime(), Is.True, "Append time should be true");
+        }
+
         [TearDown]
         public void TearDown()
         {
