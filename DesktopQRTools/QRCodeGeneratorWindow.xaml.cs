@@ -224,18 +224,6 @@ namespace DesktopQRTools
             }
         }
 
-        public QRCodeGeneratorWindow(string? configPath = "")
-        {
-            InitializeComponent();
-            LoadConfiguration(string.IsNullOrEmpty(configPath) ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini") : configPath);
-        }
-
-        // Constructor for testing with mock file system
-        public QRCodeGeneratorWindow(string? configPath, IFileSystem fileSystem) : this(configPath)
-        {
-            FileSystem = fileSystem;
-        }
-
         public string GetAutoSaveFileName()
         {
             string fileName = _autoSaveQRCodeName;
