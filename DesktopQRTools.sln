@@ -18,4 +18,5 @@ Global
 		{D9C79CC5-8B3F-4F3F-A54F-D5494546968C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9C79CC5-8B3F-4F3F-A54F-D5494546968C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9C79CC5-8B3F-4F3F-A54F-D5494546968C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 EndGlobal
