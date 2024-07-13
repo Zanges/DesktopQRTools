@@ -54,7 +54,7 @@ namespace DesktopQRToolsTests
                 "AppendTime=true\n"
             ));
 
-            var window = new QRCodeGeneratorWindow(configPath, mockFileSystem, isTestMode: true);
+            var window = new QRCodeGeneratorWindow(configPath, mockFileSystem);
             window.LoadConfiguration(configPath); // Explicitly load the configuration
 
             // Act
@@ -88,7 +88,7 @@ namespace DesktopQRToolsTests
                 "AppendTime=false\n"
             ));
 
-            var window = new QRCodeGeneratorWindow(configPath, mockFileSystem, isTestMode: true);
+            var window = new QRCodeGeneratorWindow(configPath, mockFileSystem);
             
             // Ensure configuration is loaded
             window.LoadConfiguration(configPath);
