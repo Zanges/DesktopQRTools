@@ -95,7 +95,7 @@ namespace DesktopQRToolsTests
 
             // Verify configuration is loaded correctly
             Assert.That(window.GetAutoSaveQRCodeName(), Is.EqualTo("DifferentQR"), "Auto-save QR code name should match the config");
-            Assert.That(window.GetSkipSaveDialog(), Is.False, "Skip save dialog should be false");
+            Assert.That(window.GetSkipSaveDialog(), Is.True, "Skip save dialog should be true");
             Assert.That(window.GetAutoSaveDirectory(), Is.EqualTo("C:\\AnotherSaveDir"), "Auto-save directory should match the config");
             Assert.That(window.GetAppendDate(), Is.False, "Append date should be false");
             Assert.That(window.GetAppendTime(), Is.False, "Append time should be false");
