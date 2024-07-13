@@ -242,9 +242,9 @@ namespace DesktopQRTools
         public string GetAutoSaveFileName()
         {
             string fileName = _isTestMode ? "TestQR-" : _autoSaveQRCodeName;
-            if (_appendDate)
+            if (_appendDate || _isTestMode)
                 fileName += $"{DateTime.Now:yyyyMMdd}-";
-            if (_appendTime)
+            if (_appendTime || _isTestMode)
                 fileName += $"{DateTime.Now:HHmmss}-";
             
             string extension = ImageFormatComboBox.SelectedIndex == 0 ? "png" : "svg";
