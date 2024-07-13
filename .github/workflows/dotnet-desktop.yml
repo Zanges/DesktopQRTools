@@ -64,10 +64,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: List all folders and directories
+    - name: List all directories and files
       shell: pwsh
       run: |
-        Get-ChildItem -Recurse -Directory | Select-Object FullName | Format-Table -AutoSize
+        Get-ChildItem -Recurse | Select-Object FullName | Format-Table -AutoSize
 
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
