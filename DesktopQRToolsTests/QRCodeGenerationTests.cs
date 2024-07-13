@@ -89,7 +89,16 @@ namespace DesktopQRToolsTests
             ));
 
             var window = new QRCodeGeneratorWindow(configPath, mockFileSystem, isTestMode: true);
-            window.LoadConfiguration(configPath); // Explicitly load the configuration
+            
+            // Ensure configuration is loaded
+            window.LoadConfiguration(configPath);
+
+            // Verify configuration is loaded correctly
+            Assert.That(window.GetAutoSaveQRCodeName(), Is.EqualTo("DifferentQR"), "Auto-save QR code name should match the config");
+            Assert.That(window.GetSkipSaveDialog(), Is.False, "Skip save dialog should be false");
+            Assert.That(window.GetAutoSaveDirectory(), Is.EqualTo("C:\\AnotherSaveDir"), "Auto-save directory should match the config");
+            Assert.That(window.GetAppendDate(), Is.False, "Append date should be false");
+            Assert.That(window.GetAppendTime(), Is.False, "Append time should be false");
 
             // Act
             string fileName = window.GetAutoSaveFileName();
@@ -98,12 +107,6 @@ namespace DesktopQRToolsTests
             Assert.That(fileName, Is.EqualTo("DifferentQR.png"), "File name should be exactly 'DifferentQR.png'");
             Assert.That(fileName, Does.Not.Contain(DateTime.Now.ToString("yyyyMMdd")), "File name should not contain the current date");
             Assert.That(fileName, Does.Not.Contain(DateTime.Now.ToString("HHmmss")), "File name should not contain the current time");
-
-            Assert.That(window.GetAutoSaveQRCodeName(), Is.EqualTo("DifferentQR"), "Auto-save QR code name should match the config");
-            Assert.That(window.GetSkipSaveDialog(), Is.False, "Skip save dialog should be false");
-            Assert.That(window.GetAutoSaveDirectory(), Is.EqualTo("C:\\AnotherSaveDir"), "Auto-save directory should match the config");
-            Assert.That(window.GetAppendDate(), Is.False, "Append date should be false");
-            Assert.That(window.GetAppendTime(), Is.False, "Append time should be false");
         }
 
         [TearDown]
