@@ -37,17 +37,13 @@ namespace DesktopQRToolsTests
             // Reset the flag
             TestWrapper.ShowNewCalled = false;
 
-            // Replace the actual QRCodeScannerWindow.ShowNew with our test wrapper
-            var originalShowNew = typeof(QRCodeScannerWindow).GetMethod("ShowNew", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-            var wrapperShowNew = typeof(TestWrapper).GetMethod("ShowNew", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+            // Store the original ShowNew method
+            var originalShowNew = QRCodeScannerWindow.ShowNew;
 
             try
             {
-                System.Runtime.CompilerServices.RuntimeHelpers.PrepareMethod(originalShowNew.MethodHandle);
-                System.Runtime.CompilerServices.RuntimeHelpers.PrepareMethod(wrapperShowNew.MethodHandle);
-
-                // Replace the original method with our wrapper
-                MethodHelper.SwapMethods(originalShowNew, wrapperShowNew);
+                // Replace QRCodeScannerWindow.ShowNew with our test wrapper
+                QRCodeScannerWindow.ShowNew = TestWrapper.ShowNew;
 
                 // Call the TriggerQRScan method
                 QRCodeScanFunctionality.TriggerQRScan();
@@ -57,24 +53,8 @@ namespace DesktopQRToolsTests
             }
             finally
             {
-                // Restore the original method
-                MethodHelper.SwapMethods(wrapperShowNew, originalShowNew);
-            }
-        }
-    }
-
-    public static class MethodHelper
-    {
-        public static void SwapMethods(System.Reflection.MethodInfo method1, System.Reflection.MethodInfo method2)
-        {
-            unsafe
-            {
-                ulong* methodDescriptor1 = (ulong*)method1.MethodHandle.Value.ToPointer();
-                ulong* methodDescriptor2 = (ulong*)method2.MethodHandle.Value.ToPointer();
-
-                ulong temp = *methodDescriptor1;
-                *methodDescriptor1 = *methodDescriptor2;
-                *methodDescriptor2 = temp;
+                // Restore the original ShowNew method
+                QRCodeScannerWindow.ShowNew = originalShowNew;
             }
         }
     }
