@@ -61,6 +61,13 @@ namespace DesktopQRToolsTests
             string fileName = window.GetAutoSaveFileName();
 
             // Assert
+            Console.WriteLine($"Generated file name: {fileName}");
+            Console.WriteLine($"Auto-save QR code name: {window.GetAutoSaveQRCodeName()}");
+            Console.WriteLine($"Skip save dialog: {window.GetSkipSaveDialog()}");
+            Console.WriteLine($"Auto-save directory: {window.GetAutoSaveDirectory()}");
+            Console.WriteLine($"Append date: {window.GetAppendDate()}");
+            Console.WriteLine($"Append time: {window.GetAppendTime()}");
+
             Assert.That(fileName, Does.StartWith("TestQR-"), "File name should start with TestQR-");
             Assert.That(fileName, Does.EndWith(".png"), "File name should end with .png");
             Assert.That(fileName, Does.Contain(DateTime.Now.ToString("yyyyMMdd")), "File name should contain the current date");
