@@ -18,7 +18,7 @@ namespace DesktopQRToolsTests
             var dispatcher = Dispatcher.CurrentDispatcher;
             dispatcher.Invoke(() =>
             {
-                _generatorWindow = new QRCodeGeneratorWindow();
+                _generatorWindow = new QRCodeGeneratorWindow(configPath: null, isTestMode: true);
                 _scannerWindow = new QRCodeScannerWindow();
             });
         }
