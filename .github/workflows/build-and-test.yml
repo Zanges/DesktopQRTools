@@ -18,11 +18,14 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
+    - name: List solution files
+      run: dir /s /b *.sln
+
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore DesktopQRTools.sln
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build DesktopQRTools.sln --no-restore
 
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test DesktopQRTools.sln --no-build --verbosity normal
