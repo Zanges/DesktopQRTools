@@ -41,7 +41,7 @@ namespace DesktopQRToolsTests
         }
 
         [Test]
-        public void TestQRCodeGeneratorWindowAutoSaveFileName()
+        public void TestAutoSaveFileNameGeneration()
         {
             // Arrange
             var mockFileSystem = new MockFileSystem();
@@ -64,6 +64,7 @@ namespace DesktopQRToolsTests
             Assert.That(fileName, Does.EndWith(".png"), "File name should end with .png");
             Assert.That(fileName, Does.Contain(DateTime.Now.ToString("yyyyMMdd")), "File name should contain the current date");
             Assert.That(fileName, Does.Contain(DateTime.Now.ToString("HHmmss")), "File name should contain the current time");
+            Assert.That(fileName, Does.Match(@"TestQR-\d{8}-\d{6}\.png"), "Generated file name should match expected format");
 
             Assert.That(window.GetAutoSaveQRCodeName(), Is.EqualTo("TestQR"), "Auto-save QR code name should match the config");
             Assert.That(window.GetSkipSaveDialog(), Is.True, "Skip save dialog should be true");
@@ -120,25 +121,6 @@ namespace DesktopQRToolsTests
 
             Assert.That(result, Is.Not.Null, "Decoded result should not be null");
             Assert.That(result.Text, Is.EqualTo(testContent), "Decoded content should match the original content");
-        }
-
-        [Test]
-        public void TestAutoSaveFileNameGeneration()
-        {
-            // Arrange
-            var qrCodeGeneratorWindow = new QRCodeGeneratorWindow(_testConfigPath);
-
-            // Act
-            string generatedFileName = qrCodeGeneratorWindow.GetAutoSaveFileName();
-
-            // Assert
-            Assert.That(qrCodeGeneratorWindow.GetAutoSaveQRCodeName(), Is.EqualTo("TestQRCode"), "Auto-save QR code name should match the config");
-            Assert.That(qrCodeGeneratorWindow.GetSkipSaveDialog(), Is.True, "Skip save dialog should be true");
-            Assert.That(qrCodeGeneratorWindow.GetAutoSaveDirectory(), Is.EqualTo("TestDir"), "Auto-save directory should match the config");
-            Assert.That(qrCodeGeneratorWindow.GetAppendDate(), Is.True, "Append date should be true");
-            Assert.That(qrCodeGeneratorWindow.GetAppendTime(), Is.True, "Append time should be true");
-
-            Assert.That(generatedFileName, Does.Match(@"TestQRCode-\d{8}-\d{6}\.png"), "Generated file name should match expected format");
         }
     }
 }
