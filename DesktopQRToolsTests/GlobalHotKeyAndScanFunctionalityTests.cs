@@ -2,7 +2,6 @@ using System;
 using System.Windows.Input;
 using DesktopQRTools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace DesktopQRToolsTests
 {
