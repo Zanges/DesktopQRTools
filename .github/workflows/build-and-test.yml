@@ -19,10 +19,11 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: List solution files
-      run: dir /s /b *.sln
+      shell: pwsh
+      run: Get-ChildItem -Path . -Filter *.sln -Recurse | ForEach-Object { $_.FullName }
 
     - name: Restore dependencies
-      run: dotnet restore DesktopQRTools.sln
+      run: dotnet restore
 
     - name: Build
       run: dotnet build DesktopQRTools.sln --no-restore
