@@ -63,7 +63,7 @@ namespace DesktopQRTools
             UpdateInstructionsText();
         }
 
-        public static void ShowNew()
+        public static Action ShowNew = () =>
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -85,7 +85,7 @@ namespace DesktopQRTools
                     MessageBox.Show($"An error occurred while opening the QR Code Scanner: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
-        }
+        };
 
         private void InitializeTargetingRectangle()
         {
