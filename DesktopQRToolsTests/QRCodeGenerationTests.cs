@@ -82,7 +82,7 @@ namespace DesktopQRToolsTests
             var configPath = "C:\\TestConfig\\config2.ini";
             mockFileSystem.AddFile(configPath, new MockFileData(
                 "AutoSaveQRCodeName=DifferentQR\n" +
-                "SkipSaveDialog=true\n" +
+                "SkipSaveDialog=false\n" +
                 "AutoSaveDirectory=C:\\AnotherSaveDir\n" +
                 "AppendDate=false\n" +
                 "AppendTime=false\n"
