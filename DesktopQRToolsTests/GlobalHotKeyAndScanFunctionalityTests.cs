@@ -23,7 +23,7 @@ namespace DesktopQRToolsTests
         // Test wrapper class
         private class TestWrapper : QRCodeScannerWindow
         {
-            public static bool ShowNewCalled { get; private set; }
+            public static bool ShowNewCalled { get; set; }
 
             public static new void ShowNew()
             {
