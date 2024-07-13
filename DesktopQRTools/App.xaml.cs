@@ -15,7 +15,13 @@ namespace DesktopQRTools
     public partial class App : Application
     {
         private GlobalHotKey _globalHotKey;
-        private const string ConfigFileName = "config.ini";
+        private const string DefaultConfigFileName = "config.ini";
+        private string _configFileName;
+
+        public App()
+        {
+            _configFileName = DefaultConfigFileName;
+        }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
@@ -60,10 +66,15 @@ namespace DesktopQRTools
             }
         }
 
-        private void EnsureConfigFileExists()
+        public void EnsureConfigFileExists(string configFileName = null)
         {
+            if (configFileName != null)
+            {
+                _configFileName = configFileName;
+            }
+
             string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string configFilePath = Path.Combine(appDirectory, ConfigFileName);
+            string configFilePath = Path.Combine(appDirectory, _configFileName);
 
             if (!File.Exists(configFilePath))
             {
@@ -92,7 +103,7 @@ namespace DesktopQRTools
         private (ModifierKeys modifiers, Key key) LoadHotkeyFromConfig()
         {
             string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string configFilePath = Path.Combine(appDirectory, ConfigFileName);
+            string configFilePath = Path.Combine(appDirectory, _configFileName);
 
             if (File.Exists(configFilePath))
             {
