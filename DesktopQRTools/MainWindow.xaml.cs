@@ -21,7 +21,7 @@ namespace DesktopQRTools
         /// <param name="e">The event data.</param>
         private void CreateQRCodeButton_Click(object sender, RoutedEventArgs e)
         {
-            QRCodeGeneratorWindow qrCodeGeneratorWindow = new QRCodeGeneratorWindow(configPath: null, isTestMode: false);
+            QRCodeGeneratorWindow qrCodeGeneratorWindow = new QRCodeGeneratorWindow(configPath: null);
             qrCodeGeneratorWindow.Show();
         }
 
