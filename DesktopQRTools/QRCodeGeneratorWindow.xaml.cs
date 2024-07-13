@@ -226,7 +226,7 @@ namespace DesktopQRTools
 
         public string GetAutoSaveFileName()
         {
-            string fileName = _autoSaveQRCodeName;
+            string fileName = _autoSaveQRCodeName + "-";
             if (_appendDate)
                 fileName += $"{DateTime.Now:yyyyMMdd}-";
             if (_appendTime)
