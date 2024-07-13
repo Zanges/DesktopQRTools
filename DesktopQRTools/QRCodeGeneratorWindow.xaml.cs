@@ -20,7 +20,7 @@ namespace DesktopQRTools
     {
         private WriteableBitmap? _generatedQRCode;
         private string? _qrCodeContent;
-        private string _autoSaveQRCodeName = "QRCode";
+        private string _autoSaveQRCodeName = "TestQR";
         private string _autoSaveDirectory = "";
         private bool _skipSaveDialog = false;
         private bool _appendDate = false;
@@ -47,18 +47,18 @@ namespace DesktopQRTools
                 configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
             }
 
-            if (File.Exists(configFilePath))
+            if (FileSystem.File.Exists(configFilePath))
             {
-                string[] lines = File.ReadAllLines(configFilePath);
+                string[] lines = FileSystem.File.ReadAllLines(configFilePath);
                 foreach (string line in lines)
                 {
                     string[] parts = line.Split('=');
                     if (parts.Length == 2)
                     {
-                        switch (parts[0])
+                        switch (parts[0].Trim())
                         {
                             case "AutoSaveQRCodeName":
-                                _autoSaveQRCodeName = parts[1];
+                                _autoSaveQRCodeName = parts[1].Trim();
                                 break;
                             case "SkipSaveDialog":
                                 bool.TryParse(parts[1], out _skipSaveDialog);
