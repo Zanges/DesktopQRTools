@@ -28,7 +28,3 @@ To use Desktop QR Tools:
 ## Contributing
 
 Contributions to improve Desktop QR Tools are welcome. Please feel free to submit a Pull Request.
-
-## License
-
-[Add your chosen license here]
